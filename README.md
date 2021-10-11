@@ -1,6 +1,6 @@
 # socialsite
 Social Media Site
-published at <a href="socialsite14911@000webhostapp.com" target="_blank">socialsite14911@000webhostapp.com</a>
+published at https://socialsite14911@000webhostapp.com
 
 1)  About Site:
       Social site is a social website developed using
