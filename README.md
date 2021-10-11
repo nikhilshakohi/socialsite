@@ -1,6 +1,6 @@
 # socialsite
 Social Media Site
-published at https://socialsite14911@000webhostapp.com
+published at https://socialsite14911.000webhostapp.com
 
 1)  About Site:
       Social site is a social website developed using
