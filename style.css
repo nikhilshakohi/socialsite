@@ -1,0 +1,767 @@
+html{
+	text-align: center;
+	font-family: Verdana;
+	transition: all 1s ease-in-out;
+	background-color: rgba(90, 50, 200, 0.3);
+	overflow-y: overlay;/*for scrollbar absolute positioning*/
+	/*background-image: url("posts/basics/background.jpg");
+	background-size: cover;*/
+}
+::-webkit-scrollbar{
+	width: 10px;border-radius: 10px;
+}
+::-webkit-scrollbar-thumb{
+	background: linear-gradient(to bottom, rgba(170,90,220,1), rgba(170,80,200,1));
+}
+::-webkit-scrollbar-track{
+	background: linear-gradient(to left, rgba(200,200,200,0.7), rgba(200,200,200,0.5));
+}
+::-webkit-scrollbar-thumb:hover{
+	background: linear-gradient(to bottom, rgba(70,50,120,1), rgba(70,40,100,1));
+}
+
+body{margin: 0;}
+a{text-decoration: none;color: white;}
+/*Login Page*/
+#formsContainer{
+	position: relative;
+	box-shadow: 0 0 2px 2px rgba(180, 180, 180, 1.0);
+	background-color: rgba(200, 200, 200, 0.8);
+	max-width: 450px;height: 540px;
+	margin: 20px auto 10px auto;
+	padding: 10px;
+	border-radius: 10px;
+	overflow: hidden;
+}
+#loginForm, #signupForm{
+	position: absolute;
+	height: 540px;
+	transition: transform 0.2s ease-in-out;
+	animation: fade 1s ease-in-out;
+}
+#signupForm{transform: translateX(120%);}/*Initially signup Hidden*/
+.formInput, .formSubmit, .formReset, .formChangeButton{
+	padding: 10px;margin: 7px;
+	transform: scale(1.2);/*Used this instead of font size as chrome is not changing font size unless clicked anywhere once*/
+	width: 250px;max-width: 90%;
+	border: none;
+	background: rgba(240, 240, 240, 1.0);
+	border-radius: 10px;
+	cursor: pointer;
+}
+.formInput{cursor: text;}
+.formSubmit{
+	color: white;
+	/*background: linear-gradient(to left,grey,silver);*/
+	background: linear-gradient(to right, rgba(50,50,100,1), rgba(50,50,250,1));
+}
+.formReset:hover, .formChangeButton:hover{
+	background: rgba(100, 100, 100, 1.0);color: white;
+}
+.formSubmit:hover{
+	background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));
+}
+.formChangeButton{
+	position: absolute;
+	bottom: 0;width: 125px;
+	background: linear-gradient(to left, silver, grey);
+	color: white;font-size: medium;transform: scale(1);
+}
+.loginButton{left: 0;}
+.signupButton{right: 0;}
+.checkboxItem{cursor: pointer;}
+
+/*Header*/
+#headerDiv{
+	position: fixed;
+	display: flex;align-content: center;align-items: center;
+	top: 0;left: 0;right: 0;
+	height: 60px;
+	background: linear-gradient(to left, silver, grey);z-index: 2;
+	box-shadow: 0 0 10px 0 rgba(50, 20, 150, 1.0);
+}
+#headerFirst,#headerMiddle,#headerLast{
+	display: flex;align-content: center;align-items: center;
+	width: 33%;height: 60px;
+}
+#headerMiddle{justify-content: center;}
+#headerLast{justify-content: flex-end;padding-right:10px}
+#headerSiteName{
+	margin: 5px 10px;
+	font-size: x-large;
+}
+.headerButtons, .coolButton{
+	cursor: pointer;
+	padding: 10px 20px;margin: 10px;
+	border-radius: 5px;border: none;color: white;
+	background: linear-gradient(to left, rgba(120,120,120,1), rgba(90,90,90,1));
+	font-size: medium;
+}
+.headerButtons:hover, .coolButton:hover{
+	background: linear-gradient(to left, rgba(100,100,100,1), rgba(20,20,20,1));	
+}
+.headerSearchBar{
+	border: none;border-radius: 20px 0px 0px 20px;
+	background: silver;color: black;font-size: medium;
+	padding: 7px 20px;vertical-align: middle;
+}
+.headerSearchBar:focus{box-shadow: 0 0 2px 2px rgba(120, 120, 120, 1.0);}
+.headerSearchBar:focus ~ .headerSearchSubmit{box-shadow: 2px 0 2px 2px rgba(120, 120, 120, 1.0);}
+.headerSearchBar::placeholder{color: rgba(0, 0, 0, 0.5);}
+.headerSearchSubmit{
+	border: none;background: none;
+	vertical-align: middle;cursor: pointer;
+	background: silver;
+	border-radius: 0px 20px 20px 0px;
+	padding: 4.45px 10px;
+	margin-left: -10px;
+}
+.utilityIcon{
+	width: 20px;height: 20px;
+}
+#headerProfileButton{
+	transform: scale(1.2);
+	margin: 20px;padding: 0 10px;border-radius: 10px;
+	color: black;cursor: pointer;
+}
+#headerProfileButton:hover{box-shadow: 0 0 1px 1px rgba(150, 150, 150, 1.0);}
+.headerProfileLink{display: inline-flex;vertical-align: middle;border-radius: 20px;}
+.headerprofilePic{
+	height: 40px;width: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+#headerLogoutButton{
+	background: linear-gradient(to right,rgba(150,20,30,1),rgba(200,150,70,1));
+}
+#headerLogoutButton:hover{
+	background: linear-gradient(to right,rgba(180,10,15,1),rgba(250,75,35,1));
+}
+#hamburgerIcon{
+	display: none;
+	flex-direction: column;vertical-align: middle;
+	background-color: rgba(50, 50, 50, 0.5);
+	padding: 7px;margin: 5px 20px;border-radius: 20px;cursor: pointer;
+}
+#hamburgerIcon:hover{
+	background-color: rgba(50, 50, 50, 0.8);
+}
+#headerSideDivModal{
+	position: fixed;width: 100vw;height: 100%;top: 0;left: 0;z-index: 3;display: flex;
+	animation: getLeft 0.5s ease-out;
+}
+#headerSideDivModalEmpty{
+	width: 50vw;height: 100%;position: fixed;left: 0;top: 0;z-index: 3;
+	background-color: rgba(0, 0, 0, 0.3);animation: fade 1s ease-in-out;
+}
+#headerSideDiv{
+	width: 50vw;height: 100%;overflow: auto;
+	position: fixed;right: 0;top: 0;
+	background-color: rgba(0, 0, 0, 0.7);color: white;
+}
+#headerSideDivHeading{
+	padding: 20px 10px;background-color: rgba(0, 0, 0, 0.6);
+}
+.sideDivProfilePic{
+	height: 70px;width: 70px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+.headerSideButtons{
+	padding: 20px;text-align: left;
+	margin: 5px 0;
+	cursor: pointer;
+	background: linear-gradient(to bottom,rgba(70, 120, 180, 0.8),rgba(30, 80, 120, 0.8));
+}
+.headerSideLogoutButton{background: linear-gradient(to bottom,rgba(220, 80, 70, 0.8),rgba(150, 80, 30, 0.8));position: absolute;bottom: 10px;}
+.headerSideFeedbackButton{background: linear-gradient(to bottom,rgba(70, 60, 180, 0.8),rgba(40, 30, 150, 0.8));position: absolute;bottom: 80px;width: 100%;}
+#feedbackFormDiv{display: none;}
+.feedbackInput::placeholder{color: rgba(0, 0, 0, 0.5);}
+.feedbackInput{
+	width: 100%;font-family: Verdana;
+	border: none;box-sizing: border-box;
+	color: black;font-size: medium;
+	padding: 7px 10px;
+	background-color:rgba(240,240,240,1);height:80px
+}
+.headerSideAboutButton{background: linear-gradient(to bottom,rgba(120, 80, 230, 0.8),rgba(90, 50, 200, 0.8));}
+.headerSideButtons:hover{
+	background-color: rgba(100, 100, 100, 0.8);	
+}
+.headerSideButtons input,.headerSideButtons a{
+	border: none;background: none;
+	color: white;font-size: medium;
+	cursor: pointer;
+}
+#lineA,#lineB,#lineC{border: 2px solid rgba(250, 250, 250, 1.0);width: 20px;margin: 3px;background-color: white;}
+/*#lineANew{transform: rotate(45deg) translateY(10px) translateX(4px);}
+#lineCNew{transform: rotate(-45deg) translateY(-10px) translateX(4px);}
+#lineBNew{visibility: hidden;}*/
+
+/*Content Page*/
+/*For Mobile View*/
+#content{display: flex;margin-top: 70px;margin-bottom: 20px;animation: fade 0.5s ease-in-out;}
+#contentLeft{width: 30%;padding: 0 10px;}
+#contentCenter{width: 40%;margin: 5px 10px;}
+#contentRight{width: 30%;padding: 0 10px;}
+#footer{
+	margin-top: 500px;box-shadow: 0 0 5px 2px grey;background-color: rgba(70, 50, 180, 0.3);width: 100%;padding: 50px 0;
+}
+.coolButtonFooter{
+	display: inline-block;color: black;padding: 5px;border-radius: 10px;cursor: pointer;
+}
+.coolButtonFooter:hover{background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));color: white;}
+
+/*Add Post*/
+#addPostForm{
+	display: flex;justify-content: flex-start;align-items: center;
+	background-color: rgba(230, 230, 230, 1.0);
+	border-radius: 10px;padding: 0px 20px;
+}
+.postUploadFileLabel{
+	color: white;cursor: pointer;vertical-align: middle;
+	background: linear-gradient(to right,rgba(100,100,100,1),rgba(150,150,150,1));
+	padding: 10px;display: inline-block;
+	border-radius: 20px;
+}
+.postUploadFileLabel:hover{
+	background: linear-gradient(to right,rgba(50,50,50,1),rgba(100,100,100,1));
+}
+#getUploadedFileName{text-overflow: ellipsis;overflow: hidden;width: 70px;margin-left: auto;margin-right: auto;}
+.postCaptionEntry{
+	border: none;border-radius: 10px;
+	background-color: rgba(200, 200, 200, 1.0);
+	font-size: medium;
+	padding: 10px;font-family: Verdana;margin: 5px;
+}
+.coolButton{background: linear-gradient(to right, rgba(50,50,100,1), rgba(50,50,250,1));margin: 0px;}
+.coolButton:hover{background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));}
+.coolMiniButton{background: linear-gradient(to right, rgba(20,20,100,0.7), rgba(50,50,250,0.7));margin: 0px;
+padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white;cursor: pointer;}
+.coolMiniButton:hover{background: linear-gradient(to right, rgba(20,20,150,1), rgba(100,100,250,1));}
+.pendingFriendButton{background: linear-gradient(to right, rgba(100,20,20,0.7), rgba(250,50,50,0.7));margin: 0px;}
+.pendingFriendButton:hover{background: linear-gradient(to right, rgba(150,20,20,1), rgba(250,100,100,1));}
+.friendsButton{background: linear-gradient(to right, rgba(20,100,20,0.7), rgba(50,200,50,0.7));margin: 0px;}
+.friendsButton:hover{background: linear-gradient(to right, rgba(20,100,20,1), rgba(100,200,100,1));}
+.loaderButton{
+	height:20px;width: 20px;background-color: green;animation: rotate 1s infinite linear;margin: auto;padding: auto; 
+}
+#imageLoader,.loaderButtonBig{
+	margin-top: 50vh;height: 40px;width: 40px;
+}
+@keyframes rotate{
+  0%{transform: rotate(0deg);background-color: limegreen;}
+  50%{transform: rotate(180deg);background-color: orangered;border-radius: 50%;opacity: 0.5;}
+  100%{transform: rotate(360deg);background-color: limegreen;}
+}
+@keyframes getLeft{
+	0%{transform: translateX(50%);}
+	100%{}
+}
+
+.errorMessage{color: red;font-size: large;background-color: white;}
+.infoMessage{color: blue;font-size: large;background-color: white;}
+.successMessage{color: green;font-size: large;background-color: white;}
+/*Content Posts*/
+/*Posts*/
+.postProfileName{
+	border:none;background:none;font-size: medium;font-family: Verdana;display: inline-block;padding: 0;
+}
+.postDiv,.searchDiv,.captionDiv{
+	margin: 10px auto 10px auto;padding: 5px 0;
+	min-width: 300px;
+	max-width: 600px;
+	border-radius: 10px;background-color: rgba(230, 230, 230, 1.0);
+	transition: height 1s ease-in-out;
+}
+.postDiv,#addPostForm,.sideDiv,.searchDiv,.individualPostDiv,#userProfileButtonsDiv,#profileInfo{
+	box-shadow: 0 0 5px 0px rgba(100, 20, 200, 1.0);
+}
+.individualPostDiv{
+	width: 70%;margin-left: auto;margin-right: auto;
+}
+.imageDiv{
+	background-color: rgba(230, 230, 230, 1.0);
+}
+.individualImageDiv{
+	object-fit:contain;max-width:100%;max-height: 100vh;
+}
+.imageDiv,.captionDiv{
+	max-width: 100%;min-width: 100%;
+	margin: 0 auto;border-radius: 0;
+}
+.postHeading{
+	display: flex;
+	text-align: left;
+	padding: 5px;justify-content: space-between;
+}
+.postProfileDetails{
+	display: flex;flex-direction: column;
+	align-content: center;vertical-align: middle;
+	height: 50px;justify-content: center;
+}
+.unhighlightText{display: none;}
+.postDate{color: rgba(0, 0, 0, 0.7);font-size: small;padding: 1px 0;}
+.postImage{
+	max-width: 100%;max-height: 400px;
+	object-fit: contain;
+}
+.postImageDiv{
+	border:none;background:none;cursor:pointer;padding: 0px;
+}
+.postActionsDetails{padding: 0px 10px;display: flex;justify-content: space-between;}
+.likeButtonForm,.likedButtonForm{
+	display: inline-flex;width: 30%;justify-content: flex-start;
+}
+.likedButton,.likeButton,.commentButton,.shareButton{
+	border: none;border-radius: 5px;padding: 10px 30px;font-size: medium;cursor: pointer;
+	background: rgba(200, 200, 200, 1);color: black;
+}
+.likedButton{
+	padding: 10px 20px;
+}
+.shareButtonForm{width: 33%;display: inline-flex;justify-content: flex-end;}
+.commentButtonForm{justify-content: center;width: 33%;display: inline-flex;}
+.likeButton:hover{background: rgba(150, 150, 150, 1);color: white;}
+.commentButton:hover,.shareButton:hover{background: rgba(150, 150, 150, 1);color: white;}
+.likedButton{background: rgba(10, 20, 240, 0.7);color: white;}
+.likedButton:hover{background: rgba(10, 30, 140, 0.7);}
+.postLikesDetails{cursor: pointer;}
+.postLikesDetails:hover{color: rgba(100, 150, 200, 1.0);}
+.messagePopup{
+	position: absolute;
+	transform: translateY(30px);
+	background-color: rgba(0, 0, 0, 0.7);color: white;
+	max-width: 70vw;padding: 10px;cursor: pointer;overflow: auto;
+	border-radius: 10px;animation: fade 0.5s ease-out;
+}
+.likeDetails{
+	background-color: rgba(0, 0, 0, 0.7);color: white;
+	padding: 5px;margin-top: 20px;
+	max-height: 500px;overflow: auto;
+	transform: scaleY(1);
+	transition: transform 0.5s ease-in-out;
+	animation: hideTransform 0.1s ease-in-out;
+}
+.likeUserDetails{
+	cursor: pointer;border: none;background: none;color: white;font-size: medium;padding: 0px 5px;
+}
+.likeUserDetails:hover{background-color: rgba(100, 150, 200, 0.4);}
+.userCommentsDiv{
+	text-align: left;
+	padding: 5px;
+	max-height:350px;overflow:auto;
+}
+.commentsOuterDiv{
+	max-height:500px;overflow:auto;
+	transition: max-height 1s;
+	animation: heightIncrease 0.5s ease-out;
+}
+.postCommentsDetails{
+	cursor: pointer;
+}
+.commentBox{width: 95%;font-family:Verdana}
+.postActions{
+	padding: 10px;background-color: gainsboro;justify-content: center;border-radius: 0px 0px 10px 10px;
+}
+.PostCaption{
+	text-align: left;
+	white-space: pre-wrap;
+	padding: 5px;
+}
+.profilePic{
+	height: 50px;width: 50px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+.profilePictureButton{
+	background: none;
+	border: none;
+}
+.headingName{font-size: large;font-weight: 500;}
+.sideDiv{
+	font-size: medium;
+	margin: 5px auto;padding: 20px 10px;
+	border-radius: 10px;background-color: rgba(230, 230, 230, 1.0);
+	max-width:700px;overflow: auto;
+}
+.contentEditButton{
+	margin: 10px;
+}
+.hamburgerMenuIcon{
+	display: flex;justify-content: center;align-items: center;align-content: center;
+	background-color: rgba(50, 50, 50, 0.2);
+	margin: 5px 10px;padding: 5px;
+	width: 20px;height: 20px;border-radius: 50%;cursor: pointer;
+}
+.hamburgerMenuIcon:hover{
+	background-color: rgba(50, 50, 50, 0.7);
+}
+.dotA,.dotB,.dotC{
+	border: 1px solid rgba(250, 250, 250, 1.0);
+	width: 1px;height: 1px;margin: 2px;background-color: white;border-radius: 50%;
+}
+.menuOptions{
+	position: absolute;width: 100px;
+	background-color: rgba(0, 0, 0, 0.7);color: white;
+	padding: 5px;
+	transform: scaleY(1) translateX(-70px);
+	transition: transform 0.5s ease-in-out;
+	animation: hideTransformSide 0.1s ease-in-out;
+}
+.menuOptionsOfComments{
+	display: flex;flex-direction: column;
+	position: absolute;width: 100px;
+	background-color: rgba(0, 0, 0, 0.7);color: white;
+	padding: 5px;margin: -10px;
+	transform: scaleY(1);
+	transition: transform 0.5s ease-in-out;
+	animation: hideTransform 0.1s ease-in-out;
+}
+.hamburgerCommentsMenuIcon{width: 10px;height: 10px;vertical-align: middle;}
+/*Profile Page*/
+#profileInfo,#userProfileButtonsDiv{
+	display: flex;width: 50%;
+	padding: 10px;margin: 5px auto 5px auto;
+	border-radius: 10px;overflow: auto;text-align: center;
+	background-color: rgba(230, 230, 230, 1.0);
+}
+.profilePicBig{
+	height: 300px;width: 300px;
+	border-radius: 50%;
+	box-shadow: 0 0 5px 2px rgba(100, 30, 150, 1.0);
+	object-fit: cover;cursor: pointer;
+}
+#profilePagePicture{
+	width: 50%;
+}
+#profileDetails{
+	width: 50%;text-align: left;
+	padding: 20px 10px;color: rgba(0, 0, 0, 0.6);
+}
+.profileDetail{
+	padding: 10px;
+}
+.actualDetail{color: rgba(0, 0, 0, 1);}
+#profileEditOuter{
+	position: fixed;
+	height: 100%;width: 100%;top: 0;left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+#profileEditInner{
+	background-color: rgba(230, 230, 230, 1.0);
+	display: inline-block;
+	padding: 20px 50px;margin-top: 100px;
+	border-radius: 10px;
+}
+#smallScreenProfileName{
+	display: none;
+}
+#bigScreenProfileName{
+	display: block;
+}
+.miniButtons{
+	padding: 5px 10px;
+	border-radius: 20px;
+	font-size: small;cursor: pointer;border: none;
+	color: white;background: linear-gradient(to left, rgba(120,120,120,0.7), rgba(50,50,50,0.7));
+}
+.miniButtons:hover{background: linear-gradient(to left, rgba(90,90,90,0.7), rgba(20,20,20,0.7));}
+.cancelButton{
+	color: white;background: linear-gradient(to left, rgba(180,70,30,0.7), rgba(150,50,20,0.7));
+}
+.cancelButton:hover{background: linear-gradient(to left, rgba(140,50,20,0.7), rgba(100,40,10,0.7));}
+.outsideModal{
+	position: fixed;display: none;
+	width: 100%;height: 100%;top: 0;right: 0;
+	background-color: rgba(0, 0, 0, 0.8);z-index: 3;
+}
+.imageModal{
+	position: fixed;display: flex;
+	max-width: 100vw;max-height: 70vh;
+	top: 10%;left: 50%;transform: translateX(-50%);
+	z-index: 3;
+	animation: zoom 1s ease-in-out;
+	box-shadow: 0 0 20px 5px rgba(200, 200, 200, 1.0);
+}
+@keyframes zoom{
+	0%{transform: translateX(-50%) scale(0.35);border-radius: 50%;opacity: 0;}
+	20%{transform: translateX(-50%) scale(0.35);border-radius: 50%;opacity: 0;}
+	100%{transform: translateX(-50%) scale(1);}	
+}
+@keyframes fade{
+	0%{opacity: 0;}
+	50%{opacity: 0;}
+	100%{opacity: 1;}
+}
+@keyframes likedAnimation{
+	0%{box-shadow: 0 0 0px 0px rgba(70, 20, 150, 1.0);}
+	30%{box-shadow: 0 0 10px 2px rgba(70, 20, 150, 1.0);}
+	100%{box-shadow: 0 0 0px 0px rgba(70, 20, 150, 1.0);}
+}
+@keyframes heightIncrease{
+	0%{max-height: 0;overflow: hidden;}
+	99%{overflow: hidden;}
+}
+@keyframes hideTransform{
+	0%{transform: scaleY(0);}
+	100%{transform: scaleY(1);}
+}
+@keyframes hideTransformSide{
+	0%{transform: scaleY(0) translateX(-70px);}
+	100%{transform: scaleY(1) translateX(-70px);}
+}
+.likedAnimation{animation: likedAnimation 0.5s ease-in-out;}
+.profilePicActionDetails{color: white;bottom: 10%;position: fixed;width: 100%;animation: fade 3s ease-in-out;}
+.profilePosts{
+	width: 70%;
+	margin-left: auto;margin-right: auto;
+}
+.smallPostsContainer{
+	display: inline-flex;
+	flex-direction: column;
+	margin: 5px;
+}
+.smallPosts{
+	max-width: 100%;max-height: 250px;
+	object-fit: contain;
+}
+.dateCaption{
+	display: inline-flex;
+}
+.accountLinkForm{
+	display: inline-flex;
+	margin: 5px 0px;
+}
+.friendLinkDiv{
+	font-size: medium;
+	display: flex;width: 100%;
+	vertical-align: middle;justify-content: flex-start;align-items: center;align-content: center;
+	border-radius: 10px;cursor: pointer;border: none;
+	padding: 5px;margin: 5px 0;
+}
+
+.friendLinkDiv:hover{
+	box-shadow: 0 0 2px 2px rgba(200, 200, 200, 1.0);
+}
+.requestedFriendDiv{
+	display: flex;max-width:700px;
+	vertical-align: middle;justify-content: space-between;align-items: center;align-content: center;
+	border-radius: 10px;cursor: pointer;
+	margin: 5px;padding: 5px;
+}
+.requestedFriendDiv:hover{
+	box-shadow: 0 0 2px 2px rgba(200, 200, 200, 1.0);
+}
+.requestedFriendDetails{
+	display: flex;justify-content: flex-start;align-items: center;align-content: center;
+}
+.accountLinkForm button{
+	cursor: pointer;
+}
+.accountLinkForm input{
+	cursor: pointer;
+	border: none;
+	background: none;
+	font-weight: 700;font-size: medium;
+	vertical-align: middle;
+}
+.accountLinkForm input:hover{
+	color: blue;
+}
+.profileFriendsDiv{
+	display: flex;
+}
+/*Search*/
+.searchDiv{
+	padding: 20px;width: 30%;
+}
+.searchLinkDiv{
+
+}
+.searchProfileDiv{
+	display:flex;justify-content:space-between;
+}
+.searchActionButton{
+	display: flex;justify-content: center;align-items: center;align-items: center;
+}
+/*User Profile*/
+.userProfileConnectionDiv{
+	display: flex;padding: 10px 0;
+}
+#userProfileButtonsDiv{
+	justify-content: center;padding: 10px 10px 0px 10px;
+}
+#userProfilePostsButton,#userProfileFriendsButton,#userProfileFriendRequestsButton,#userProfileDetailsButton{
+	border: none;cursor: pointer;
+	padding: 10px 20px;margin: 0px 5px;
+	background-color: rgba(230, 230, 230, 1.0);
+	color: black;
+	font-size: medium;border-radius: 10px;
+}
+#userProfilePostsButton:hover,#userProfileFriendsButton:hover,#userProfileFriendRequestsButton:hover,#userProfileDetailsButton:hover{
+	background-color: rgba(180, 180, 180, 1.0);color: white;
+}
+#userProfilePostsButton{
+	color: green;
+}
+#userProfilePostsButtonDiv,#userProfileFriendsButtonDiv,#userProfileFriendRequestsButtonDiv,#userProfileDetailsButtonDiv{
+	padding: 5px 0px;
+}
+#userProfilePostsButtonDiv{
+	border-bottom: 5px solid green;
+}
+.editPostDivOuter{
+	position: fixed;
+	top: 0;left: 0;
+	width: 100%;height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	z-index: 3;
+}
+.editPostInnerDiv{
+	margin-top: 100px;
+	padding: 20px;
+	background-color: rgba(200, 200, 200, 1.0);
+	width: 50%;min-height: 50%;margin-left: auto;margin-right: auto;
+	max-height: 70%;overflow: auto;
+}
+.editPostCaption{
+	font-family: Verdana;
+	font-size: medium;
+	width: 70%;height: 150px;
+}
+#smallScreenConnectionDetails{
+	display: none;
+}
+#bigScreenConnectionDetails{
+	display: block;
+}
+/*Messenger*/
+#contentLeftPart,#contentRightPart{
+	height: calc(100vh - 120px);
+	margin: 10px 5px 10px 5px;overflow: auto;
+	border-radius: 10px;background-color: rgba(230, 230, 230, 1.0);
+}
+#contentLeftPart{
+	width: 30%;margin-left: 15px;
+}
+#contentRightPart{
+	width: 70%;margin-right: 15px;display: flex;flex-direction: column;
+	justify-content: center;vertical-align: middle;align-content: center;align-items: center;
+}
+.messageTopPart,.messageMiddlePart,.messageBottomPart{
+	justify-content: center;align-content: center;align-items: center;display: flex;
+}
+.messageTopPart{
+	width: 100%;height: 10%;box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.7);
+	display: flex;justify-content: flex-start;
+	background-color: rgba(200, 200, 200, 1.0);
+}
+.messageMiddlePart{
+	width: 100%;height: 80%;vertical-align: bottom;display: flex;flex-direction: column;justify-content: flex-end;
+	overflow: auto;
+}
+.messageBottomPart{
+	width: 100%;height: 10%;box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.7);display: flex;
+}
+.chatInput{
+	width: 100%;font-family: Verdana;
+	border: none;height: 100%;box-sizing: border-box;
+	background: rgba(210, 210, 210, 0.8);color: black;font-size: medium;
+	padding: 7px 20px;vertical-align: middle;
+}
+.chatInputSend{
+	height: 100%;border-radius: 0;margin:0;
+}
+.friendLinkChatDiv{
+	font-size: medium;
+	display: flex;width: 100%;
+	vertical-align: middle;justify-content: flex-start;align-items: center;align-content: center;
+	border-radius: 10px;cursor: pointer;border: none;background: none;
+	padding: 5px;margin: 5px 0;
+}
+.leftChatUser{
+	width: 100%;
+}
+.rightChatUser{
+	width: 100%;
+}
+.leftChatUserMessage{
+	min-width: 100px;max-width: 65%;text-align: left;float: left;
+	background-color: rgba(100, 100, 180, 0.7);color: rgba(250, 250, 250, 1.0);
+	margin: 3px 10px;border-radius: 10px 20px 20px 10px;padding: 10px;
+}
+.rightChatUserMessage{
+	min-width: 100px;max-width: 65%;text-align: right;float: right;
+	background-color: rgba(30, 20, 180, 0.7);color: white;
+	margin: 3px 10px;border-radius: 20px 10px 10px 20px;padding: 10px;
+}
+.chatArea{height:1000px;overflow:auto;display:flex;flex-direction:column-reverse}
+.userMessageDiv{
+	white-space: pre-wrap;
+}
+.messageDateTime{
+	font-size: x-small;
+	opacity: 0.7;
+}
+.newMsgTag{
+	margin-left: 10px;
+	color: white;background-color: green;
+	padding: 2px;
+	border-radius: 20px;
+}
+.hideInSmall{display: block;}
+#messagesBackButton{display: none;left: 0;right: 0;width: 100%;height: 5%;padding: 0;margin: 0;}
+@media only screen and (max-width: 960px){
+	#friendRequestsListDivHomePage,#friendListDivHomePage{display: none;}
+	.postDiv{max-width: 100%;}
+	#contentLeft{width: 0%;padding: 0;}
+	#contentCenter{width: 100%;margin: 0;}
+	#contentRight{width: 0%;padding: 0;}
+	.profilePosts{width: 100%;margin: 0;}
+	.editPostInnerDiv{width: 80%;}
+	#smallScreenProfileName{display: block;}
+	#bigScreenProfileName{display: none;}
+	#bigScreenConnectionDetails{display: none;}
+	#smallScreenConnectionDetails{display: block;}
+	.userProfileConnectionDiv{justify-content: center;padding: 0;}
+	#footerDiv{width: 100%;}
+	/*Messenger*/
+	.hideInSmall{display: none;}
+	#messagesBackButton{display: block;}
+	#contentLeftPart{width: 100%;margin: 0 10px;}
+	#contentRightPart{width: 100%;margin: 0 10px;display: none;}
+	.messageMiddlePart{height: 75%;}
+}
+@media only screen and (max-width: 1155px){
+	#profileInfo{width: 100%;}
+	#userProfileButtonsDiv,#profileInfo{width: 90%;}
+	#userProfileDetailsButton{margin-left: 70px;}/*Adjustment for mobile view..*/
+	.individualPostDiv{width: 100%;}
+	.imageDiv,.captionDiv{max-width: 100%;min-width: 100%;}
+}
+@media only screen and (max-width: 1250px){ 
+	.headerFullName{display: none;}
+	#headerHomeDiv{display: none;}
+	#headerMessengerDiv{display: none;}
+	#headerFirst{width: 20%;}
+	#headerMiddle{width: 50%;}
+	#headerLast{width: 30%;}
+	#hamburgerIcon{display: inline-flex;}
+}
+@media only screen and (max-width: 750px){ 
+	#headerFirst{width: 30%;}
+	#headerMiddle{width: 50%;}
+	#headerLast{width: 20%;}
+	#headerProfileButton{display: none;}
+	#headerLogoutButton{display: none;}
+	#profileDetails{display: none;}
+	#profilePagePicture{width: 100%;}
+}
+@media only screen and (max-width: 600px){ 
+	#headerFirst{width: 70%;}
+	#headerMiddle{display: none;}
+	#headerLast{width: 30%;}
+}
+
+
