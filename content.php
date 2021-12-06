@@ -21,7 +21,10 @@ if(isset($_SESSION['id'])){
 			<a href="profile.php"><img id="profilePictureAtUploadButton" class="profilePic" src="'.getProfilePictureLocation($conn,$username).'"></a>
 			<textarea id="postCaptionEntry'.$username.'" class="postCaptionEntry" placeholder="Write Something or caption" name="caption"></textarea><br>
 			<input id="postUploadFile" type="file" name="fileName" style="display:none">
-			<label class="miniButtons" for="postUploadFile">Add Picture</label>
+			<label class="miniButtons" for="postUploadFile">Add<br>Picture</label>
+			<select id="postPrivacy'.$username.'" class="miniButtons" style="padding:5px;margin:5px">
+				<option value="public">&#127758;</option><option value="private">&#128274;</option><option value="friends">&#128101;</option>
+			</select>
 			<script>document.getElementById("postUploadFile").onchange=function(){
 				var path=this.value;';?> path=path.replace(/^.*\\/,""); <?php echo' 
 				document.getElementById("getUploadedFileName").innerHTML=path;
@@ -29,7 +32,7 @@ if(isset($_SESSION['id'])){
 				}</script>
 			<div id="getUploadedFileName"></div>
 			<input type="hidden" name="type" value="post">
-			<div id="profilePictureSubmitOf'.$username.'" class="coolMiniButton" style="display:inline-flex;" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."post".'\')">Upload</div>
+			<button id="profilePictureSubmitOf'.$username.'" class="coolMiniButton" style="display:inline-flex;" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."post".'\')">Upload</button>
 
 		</form>';
 		if(isset($_POST['uploadPost'])){
@@ -50,7 +53,7 @@ if(isset($_SESSION['id'])){
 				echo'<span clas="errorMessage">File is too large to upload..</span>';
 			}
 		}
-		$allPosts=mysqli_query($conn,"SELECT * FROM posts ORDER BY id DESC;");
+		$allPosts=mysqli_query($conn,"SELECT * FROM posts WHERE (username='$username') OR (username!='$username' AND privacy != 'private') ORDER BY id DESC;");
 		$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$username'");
 		$checkCount=0;
 		if(mysqli_num_rows($allPosts)>0){
@@ -71,7 +74,17 @@ if(isset($_SESSION['id'])){
 										<button type="submit" class="postProfileName">'.getFriendsFullName($postUsername,$conn);
 									echo'</button></form>';
 									if($rowPost['type']=='profilePicture'){echo' has changed Profile Picture';}
-									echo'</div><div title="Posted on '.date('d-M-Y H:i a, D',strtotime($rowPost['dateTimeUploaded'])).'" class="postDate">'.date('d-M H:i',strtotime($rowPost['dateTimeUploaded'])).'</div>
+									echo'</div><div title="Posted on '.date('d-M-Y H:i a, D',strtotime($rowPost['dateTimeUploaded'])).'" class="postDate">'.date('d-M H:i',strtotime($rowPost['dateTimeUploaded']));
+										echo'<span id = "postPrivacyShow'.$rowPost['id'].'">';/*For after editing update*/
+										if($rowPost['privacy']=='public'){
+											echo '<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+										}else if($rowPost['privacy']=='private'){
+											echo '<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+										}else if($rowPost['privacy']=='friends'){
+											echo '<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+										}
+										echo'</span>';
+									echo'</div>
 								</div>
 							</div>
 							<div class="postMenuDiv">';
@@ -82,8 +95,9 @@ if(isset($_SESSION['id'])){
 										<div class="dotC"></div>
 									</div>
 									<div id="menuOptionsFor'.$rowPost['id'].'" class="menuOptions" style="display:none">
-										<div id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\',\''.$rowPost['caption'].'\')">edit</div>
+										<div id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\')">edit</div>
 										<div id="'.$rowPost['id'].'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$rowPost['id'].'\')">delete</div>
+										<div id="'.$rowPost['id'].'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$rowPost['id'].'\')">privacy</div>
 									</div>';
 								}else{
 									echo'<div></div>';//For Maintaining Flex Position
@@ -127,7 +141,7 @@ if(isset($_SESSION['id'])){
 					</div>';
 
 				}else if(($checkCount==0)&&(mysqli_num_rows($userPosts)<1)){
-					echo'<div id="newPostAdded" class="postDiv">No Posts Added yet..</div>';
+					echo'<div id="newPostAdded" class="postDiv">No Posts added yet..</div>';
 					$checkCount=1;
 				}
 			}

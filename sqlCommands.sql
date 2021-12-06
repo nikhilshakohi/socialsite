@@ -59,3 +59,6 @@ CREATE TABLE userFeedback(
 	userFullName TEXT NOT NULL,
 	userFeedback LONGTEXT NOT NULL
 );
+
+/*Privacy in posts table*/
+ALTER TABLE posts ADD privacy VARCHAR (256) NOT NULL DEFAULT 'public'

@@ -6,7 +6,22 @@ if(isset($_GET['postId'])){
 	echo'<div id="content">';
 	$encryptedPostId=mysqli_real_escape_string($conn,$_GET['postId']);
 	$postId=($encryptedPostId-149118912)/149118912;
-	$checkPosts=mysqli_query($conn,"SELECT * FROM posts WHERE id='$postId'");
+	if(isset($_SESSION['id'])){
+		$friendsArray=$_SESSION['friendsArray'];
+		$checkpostFriendName = mysqli_query($conn, "SELECT * FROM posts WHERE id = '$postId'");
+		if(mysqli_num_rows($checkpostFriendName)>0){
+			while($rowcheckPostFriendName = mysqli_fetch_assoc($checkpostFriendName)){
+				$postFriendUserName = $rowcheckPostFriendName['username'];
+			}
+		}
+		if(in_array($postFriendUserName, $friendsArray)){
+			$checkPosts=mysqli_query($conn,"SELECT * FROM posts WHERE id='$postId' AND (privacy != 'private' AND (privacy = 'friends' OR privacy = 'public'))");
+		}else{
+			$checkPosts=mysqli_query($conn,"SELECT * FROM posts WHERE id='$postId' AND (privacy != 'private' AND privacy != 'friends')");
+		}
+	}else{
+		$checkPosts=mysqli_query($conn,"SELECT * FROM posts WHERE id='$postId' AND (privacy != 'private' AND privacy != 'friends')");
+	}
 	if(mysqli_num_rows($checkPosts)>0){
 		while($rowPost=mysqli_fetch_assoc($checkPosts)){
 			echo'
@@ -35,6 +50,7 @@ if(isset($_GET['postId'])){
 									<div id="menuOptionsFor'.$rowPost['id'].'" class="menuOptions" style="display:none">
 										<button id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\',\''.$rowPost['caption'].'\')">edit</button><br>
 										<button id="'.$rowPost['id'].'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$rowPost['id'].'\')">delete</button>
+										<div id="'.$rowPost['id'].'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$rowPost['id'].'\')">privacy</div>
 									</div>';
 								}else{
 									echo'<div></div>';//For Maintaining Flex Position
@@ -90,10 +106,20 @@ if(isset($_GET['postId'])){
 			';
 		}
 	}else{
+		$privatePost=0;
+		$checkPrivacy=mysqli_query($conn,"SELECT * FROM posts WHERE id='$postId' AND (privacy = 'private' OR privacy = 'friends')");
+		if(mysqli_num_rows($checkPrivacy)>0){$privatePost=1;}
 		echo'<div style="display:flex;margin-left:auto;margin-right:auto;justify-content:center;align-content:center;align-items:center;flex-direction:column;width:50%;background-color:gainsboro;box-shadow:0 0 2px 1px grey;margin-top:20px">
-			<h3>Seems Like Page is broken..Go Back to HomePage</h3>
+			<h3>Seems Like Page is broken..</h3>';
+			if($privatePost==1){
+				echo '<h3> or Post is Private..</h3><br>';
+				if(!isset($_SESSION['id'])){echo'Login to view post..';}
+			}
+			echo'
 			<span class="loaderButton"></span>
-			<a href="index.php" class="headerButtons">Home</a>
+			<a href="index.php" class="headerButtons">';
+				if(!isset($_SESSION['id'])){echo'Login';}else{echo'Home';}
+			echo'</a><br>
 		</div>';
 	}
 	echo'</div>';

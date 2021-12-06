@@ -40,7 +40,7 @@ a{text-decoration: none;color: white;}
 	animation: fade 1s ease-in-out;
 }
 #signupForm{transform: translateX(120%);}/*Initially signup Hidden*/
-.formInput, .formSubmit, .formReset, .formChangeButton{
+.formInput, .formSubmit, .formReset, .formChangeButton,.forgotPassword{
 	padding: 10px;margin: 7px;
 	transform: scale(1.2);/*Used this instead of font size as chrome is not changing font size unless clicked anywhere once*/
 	width: 250px;max-width: 90%;
@@ -55,7 +55,7 @@ a{text-decoration: none;color: white;}
 	/*background: linear-gradient(to left,grey,silver);*/
 	background: linear-gradient(to right, rgba(50,50,100,1), rgba(50,50,250,1));
 }
-.formReset:hover, .formChangeButton:hover{
+.formReset:hover, .formChangeButton:hover,.forgotPassword:hover{
 	background: rgba(100, 100, 100, 1.0);color: white;
 }
 .formSubmit:hover{
@@ -174,8 +174,8 @@ a{text-decoration: none;color: white;}
 	background: linear-gradient(to bottom,rgba(70, 120, 180, 0.8),rgba(30, 80, 120, 0.8));
 }
 .headerSideLogoutButton{background: linear-gradient(to bottom,rgba(220, 80, 70, 0.8),rgba(150, 80, 30, 0.8));position: absolute;bottom: 10px;}
-.headerSideFeedbackButton{background: linear-gradient(to bottom,rgba(70, 60, 180, 0.8),rgba(40, 30, 150, 0.8));position: absolute;bottom: 80px;width: 100%;}
-#feedbackFormDiv{display: none;}
+.headerSideFeedbackButton{background: linear-gradient(to bottom,rgba(70, 60, 180, 0.8),rgba(40, 30, 150, 0.8));position: absolute;bottom: 80px;width: 100%;box-sizing: border-box;}
+#feedbackFormDiv,#forgotPasswordDiv{display: none;}
 .feedbackInput::placeholder{color: rgba(0, 0, 0, 0.5);}
 .feedbackInput{
 	width: 100%;font-family: Verdana;
@@ -184,6 +184,7 @@ a{text-decoration: none;color: white;}
 	padding: 7px 10px;
 	background-color:rgba(240,240,240,1);height:80px
 }
+.headerSideFindFriendsButton{width: 100%;color: white;font-family: Verdana;font-size: medium;border: none;background: linear-gradient(to bottom,rgba(90, 140, 200, 0.8),rgba(50, 100, 140, 0.8));margin: 0;}
 .headerSideAboutButton{background: linear-gradient(to bottom,rgba(120, 80, 230, 0.8),rgba(90, 50, 200, 0.8));}
 .headerSideButtons:hover{
 	background-color: rgba(100, 100, 100, 0.8);	
@@ -257,6 +258,10 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 @keyframes getLeft{
 	0%{transform: translateX(50%);}
 	100%{}
+}
+
+.headerButtonsNew{
+	background: none;
 }
 
 .errorMessage{color: red;font-size: large;background-color: white;}
@@ -367,6 +372,7 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 .PostCaption{
 	text-align: left;
 	white-space: pre-wrap;
+	word-break: break-word;
 	padding: 5px;
 }
 .profilePic{
@@ -408,6 +414,9 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 	transform: scaleY(1) translateX(-70px);
 	transition: transform 0.5s ease-in-out;
 	animation: hideTransformSide 0.1s ease-in-out;
+}
+.menuOptions:hover{
+	background-color: rgba(0, 0, 0, 0.9);
 }
 .menuOptionsOfComments{
 	display: flex;flex-direction: column;
@@ -484,6 +493,8 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 	animation: zoom 1s ease-in-out;
 	box-shadow: 0 0 20px 5px rgba(200, 200, 200, 1.0);
 }
+.postPrivacyStyle{opacity: 0.6;cursor: pointer;}
+.postPrivacyStyle:hover{opacity: 1;}
 @keyframes zoom{
 	0%{transform: translateX(-50%) scale(0.35);border-radius: 50%;opacity: 0;}
 	20%{transform: translateX(-50%) scale(0.35);border-radius: 50%;opacity: 0;}
@@ -704,11 +715,14 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 	font-size: x-small;
 	opacity: 0.7;
 }
-.newMsgTag{
+.newMsgTag,.newMsgTagHeader{
 	margin-left: 10px;
 	color: white;background-color: green;
 	padding: 2px;
 	border-radius: 20px;
+}
+.newMsgTagHeader{
+	margin: 0;
 }
 .hideInSmall{display: block;}
 #messagesBackButton{display: none;left: 0;right: 0;width: 100%;height: 5%;padding: 0;margin: 0;}
@@ -736,11 +750,10 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 @media only screen and (max-width: 1155px){
 	#profileInfo{width: 100%;}
 	#userProfileButtonsDiv,#profileInfo{width: 90%;}
-	#userProfileDetailsButton{margin-left: 70px;}/*Adjustment for mobile view..*/
 	.individualPostDiv{width: 100%;}
 	.imageDiv,.captionDiv{max-width: 100%;min-width: 100%;}
 }
-@media only screen and (max-width: 1250px){ 
+@media only screen and (max-width: 1330px){ 
 	.headerFullName{display: none;}
 	#headerHomeDiv{display: none;}
 	#headerMessengerDiv{display: none;}

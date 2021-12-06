@@ -53,12 +53,8 @@ if(mysqli_num_rows($userDetails)>0){
 						      modals[i].style.display="none";
 						    }
 					  	}
-					</script>';
-					?><br><input class="headerButtons" type="button" value="Change Profile Picture" onclick="
-					if(document.getElementById('profilePicUploader').style.display=='block'){
-						document.getElementById('profilePicUploader').style.display='none';
-					}else{document.getElementById('profilePicUploader').style.display='block';}"'; 
-					<?php echo'>
+					</script>
+					<br><input class="headerButtons" type="button" value="Change Profile Picture" onclick="openProfilePicUploader()">
 					<form method="POST" enctype="multipart/form-data">	
 						<span id="profilePicUploader" style="display:none">
 							<textarea id="postCaptionEntry'.$username.'" class="postCaptionEntry" rows="1" cols="30" placeholder="Write Something or caption" name="caption"></textarea><br>

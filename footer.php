@@ -12,7 +12,7 @@
 				<div style="width: 37.5%;">
 					<b style="text-decoration: underline;">About</b><br>
 					<a class="coolButtonFooter" href="about.php">About Social Site</a><br>
-					<a class="coolButtonFooter" onclick="toggleFeedbackForm()">Feedback</a><br>
+					<a class="coolButtonFooter" href="#" onclick="toggleFeedbackForm()">Feedback</a><br>
 					<a class="coolButtonFooter" target="_blank" href="https://github.com/nikhilshakohi/socialsite">Source Code</a><br>
 				</div>
 			</div>
@@ -85,9 +85,66 @@
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState == 4){
 				if(xhr.status == 200){
+					document.getElementById('postDivOf'+postId).style.padding='0';
 					document.getElementById('postDivOf'+postId).innerHTML='deleted';
 					setTimeout(function(){document.getElementById('postDivOf'+postId).innerHTML='';},1500);
 					document.getElementById("deletePostDiv").style.display="none";
+				}
+			}
+		}	
+	}
+
+	/*Change Privacy*/
+	function showPostPrivacyDiv(postId){
+		var postId = postId;
+		var showPostPrivacy = 'DummyText';
+		document.getElementById(postId+'PrivacyButton').innerHTML="Loading..";
+		var data = 'showPostPrivacy='+showPostPrivacy+'&postId='+postId;
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		xhr.open("POST", "conditions.php", true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		document.getElementById("privacyPostDiv").style.display="block";
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					document.getElementById("privacyPostDiv").innerHTML=this.responseText;
+					document.getElementById(postId+'PrivacyButton').innerHTML="privacy";
+				}
+			}
+		}
+	}
+	function confirmUpdatePrivacyPost(postId){
+		var postId = postId;
+		UpdatedPrivacyStatus = document.getElementById("UpdatedPrivacyStatus"+postId).value;
+		var confirmUpdatePrivacyPost = 'DummyText';
+		var data = 'confirmUpdatePrivacyPost='+confirmUpdatePrivacyPost+'&postId='+postId+"&UpdatedPrivacyStatus="+UpdatedPrivacyStatus;
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		xhr.open("POST", "conditions.php", true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					var output = this.responseText;
+					document.getElementById('confirmUpdatePrivacyPost'+postId).innerHTML='<div class = "loaderButton"></div>';
+					setTimeout(function(){
+						document.getElementById('confirmUpdatePrivacyPost'+postId).innerHTML=output;
+					},1000);
+					setTimeout(function(){
+						document.getElementById("privacyPostDiv").style.display="none";
+					},1500);
+
+					if(UpdatedPrivacyStatus=='public'){
+						document.getElementById("postPrivacyShow"+postId).innerHTML='<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+					}else if(UpdatedPrivacyStatus=='private'){
+						document.getElementById("postPrivacyShow"+postId).innerHTML='<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+					}else if(UpdatedPrivacyStatus=='friends'){
+						document.getElementById("postPrivacyShow"+postId).innerHTML='<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+					}
+
 				}
 			}
 		}	
@@ -166,7 +223,7 @@
 		}
 	}
 
-	function showPostEditDiv(postId,caption){
+	function showPostEditDiv(postId){
 		var postId = postId;
 		var caption = document.getElementById("postCaption"+postId).innerHTML;
 		var showPostCaption = 'DummyText';
@@ -268,6 +325,9 @@
 	}
 	function closeDeleteDiv(){
 		document.getElementById("deletePostDiv").style.display="none";
+	}
+	function closePrivacyDiv(){
+		document.getElementById("privacyPostDiv").style.display="none";
 	}
 	function closeDeleteCommentDiv(){
 		document.getElementById("deleteCommentDiv").style.display="none";
@@ -401,6 +461,7 @@
 		var username=username;
 		var type = type;
 		var caption = document.getElementById('postCaptionEntry'+username).value;
+		var postPrivacy = document.getElementById('postPrivacy'+username).value;
 		document.getElementById('profilePictureSubmitOf'+username).innerHTML="<span class='loaderButton'></span>";
 		var myFile = document.getElementById('postUploadFile');
 	    /*If User selects only to write and no Image Uploaded*/
@@ -409,7 +470,7 @@
 			if (window.XMLHttpRequest) { /*Mozilla, Safari*/ var xhr = new XMLHttpRequest();} 
 			else if (window.ActiveXObject) { /*IE 8 and older*/ var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
 			var uploadPostOnlyCaption="DummyText";//Declaring variables for POST Submit
-			var data = "uploadPostOnlyCaption="+uploadPostOnlyCaption+"&username="+username+"&caption="+caption+"&type="+type;	
+			var data = "uploadPostOnlyCaption="+uploadPostOnlyCaption+"&username="+username+"&caption="+caption+"&type="+type+"&postPrivacy="+postPrivacy;	
 			xhr.open("POST", "conditions.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send(data);
@@ -438,7 +499,7 @@
 			if (window.XMLHttpRequest) { /*Mozilla, Safari*/ var xhr = new XMLHttpRequest();} 
 			else if (window.ActiveXObject) { /*IE 8 and older*/ var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
 			var uploadPost="DummyText";//Declaring variables for POST Submit
-			var data = "uploadPost="+uploadPost+"&username="+username+"&caption="+caption+"&type="+type;	
+			var data = "uploadPost="+uploadPost+"&username="+username+"&caption="+caption+"&type="+type+"&postPrivacy="+postPrivacy;	
 			xhr.open("POST", "conditions.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send(data);
@@ -570,6 +631,7 @@
 		      	document.getElementById("messageMiddlePart"+friendUserId).innerHTML=this.responseText;
 		      	document.getElementById(currentUserId+'chatInput'+friendUserId).value='';
 	      	  	document.getElementById(currentUserId+'chatInputSend'+friendUserId).innerHTML="Send";
+	      	  	document.getElementById(currentUserId+'chatInput'+friendUserId).focus();
 		      } else {
 		          alert("There was a problem with the request.");
 		      }
@@ -583,7 +645,6 @@
 		}else{
 			document.getElementById("feedbackFormDiv").style.display="block";	
 		}
-		
 	}
 
 	function sendFeedback(){
@@ -609,6 +670,163 @@
 		      }
 		    }
 		}
+	}
+
+	function forgotPassword(){
+		if(document.getElementById("forgotPasswordDiv").style.display=="block"){
+			document.getElementById("forgotPasswordDiv").style.display="none";
+		}else{
+			document.getElementById("forgotPasswordDiv").style.display="block";	
+		}
+	}
+
+	function forgotPasswordSendEmail(){
+		var emailId=document.getElementById("emailIdToBeRecovered").value;
+		var tryAgain=document.getElementById("forgotPasswordContent").innerHTML;
+		//Declare XML Request
+		if (window.XMLHttpRequest) { /*Mozilla, Safari*/ var xhr = new XMLHttpRequest();} 
+		else if (window.ActiveXObject) { /*IE 8 and older*/ var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		var forgotPasswordSendEmail="DummyText";//Declaring variables for POST Submit
+		var data = "forgotPasswordSendEmail="+forgotPasswordSendEmail+"&emailId="+emailId;	
+		xhr.open("POST", "conditions.php", true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4) {
+		      if (xhr.status == 200) {
+		      	var eachResponse=this.responseText.split("-period-");
+		      	setTimeout(function(){
+		      		if(eachResponse[1]=='errorMessage'){
+		      			document.getElementById("forgotPasswordContent").innerHTML=tryAgain+eachResponse[0];
+		      		}else{
+		      			document.getElementById("forgotPasswordContent").innerHTML=eachResponse[0];
+		      		}
+		      	},2000);
+		      	document.getElementById("forgotPasswordContent").innerHTML="<br><br><div class='loaderButton'></div>";
+		      } else {
+		          alert("There was a problem with the request.");
+		      }
+		    }
+		}
+	}
+
+	function signupUser(){
+		var username = document.getElementById("signupUsername").value;
+		var mobile = document.getElementById("signupMobile").value;
+		var email = document.getElementById("signupEmail").value;
+		var firstName = document.getElementById("signupFirstName").value;
+		var lastName = document.getElementById("signupLastName").value;
+		var password = document.getElementById("signupPassword").value;
+		document.getElementById("signupSubmit").innerHTML = "<div class='loaderButton'></div>";
+
+		/*Remove Previous Validation error messges*/
+		document.getElementById("signupUsername").style.border ="none";
+		document.getElementById("signupMobile").style.border ="none";
+		document.getElementById("signupPassword").style.border ="none";
+		document.getElementById("signupFirstName").style.border ="none";
+		document.getElementById("signupLastName").style.border ="none";
+		document.getElementById("signupEmail").style.border ="none";
+		document.getElementById("loginStatusMessage").innerHTML = "";
+
+		/*Validations*/
+		if(username == '' || password == '' || firstName == '' || email == ''){ /*Empty Fields*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Please Fill in all the fields</span>";
+			document.getElementById("signupUsername").style.border = "1px solid orange";
+			document.getElementById("signupPassword").style.border = "1px solid orange";
+			document.getElementById("signupEmail").style.border = "1px solid orange";
+			document.getElementById("signupFirstName").style.border = "1px solid orange";
+		}else if(!/^[a-zA-Z0-9 ]+$/.test(username)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Username</span>";
+			document.getElementById("signupUsername").style.border = "1px solid red";
+		}else if(!/^[a-zA-Z0-9!@#$%^&*]{4,15}$/.test(password)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Password / Minimum 4 charecters are required</span>";
+			document.getElementById("signupPassword").style.border = "1px solid red";
+		}else if(!/^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Email not valid</span>";
+			document.getElementById("signupEmail").style.border = "1px solid red";
+		}else if(!/^[a-zA-Z ]*$/.test(firstName)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in First Name</span>";
+			document.getElementById("signupFirstName").style.border = "1px solid red";
+		}else if(!/^[a-zA-Z ]*$/.test(lastName)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Last Name</span>";
+			document.getElementById("signupLastName").style.border = "1px solid red";
+		}else if(!/^[0-9 ]*$/.test(mobile)){ /*Validate expressions*/
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Mobile (only numbers)</span>";
+			document.getElementById("signupMobile").style.border = "1px solid red";
+		}else{ /*If all above conditions are valid, User is signed up!*/
+			/*AJAX Functionality*/
+			/*Declare variables*/
+			var signupCheck = "RandomInput";
+			var data = "signupCheck="+signupCheck+"&username="+username+"&password="+password+"&firstName="+firstName+"&lastName="+lastName+"&email="+email+"&mobile="+mobile;
+			/*Declare XML*/
+			if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+			else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+			/*AJAX Methods*/
+			xhr.open("POST","conditions.php",true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send(data);
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4){
+					if(xhr.status == 200){
+						var eachResponse=this.responseText.split("-period-");
+				      	if(eachResponse[1]=='success'){
+				      		document.getElementById("loginStatusMessage").innerHTML=eachResponse[0];
+				      		setTimeout(function(){window.location.href = "index.php"},2000);
+				      	}else{
+				      		document.getElementById("loginStatusMessage").innerHTML=eachResponse[0];
+				      		setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML='';},5000);
+				      	}
+					}
+				}
+			}
+		}
+		document.getElementById("signupSubmit").innerHTML = "SIGNUP";
+	}
+
+	//Login
+	function loginUser(){
+		var username=document.getElementById("loginUsername").value;
+		var password=document.getElementById("loginPassword").value;
+		document.getElementById("loginSubmit").innerHTML="<div class='loaderButton'></div>";
+		//Declare XML Request
+		if (window.XMLHttpRequest) { /*Mozilla, Safari*/ var xhr = new XMLHttpRequest();} 
+		else if (window.ActiveXObject) { /*IE 8 and older*/ var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		var loginCheck="DummyText";//Declaring variables for POST Submit
+		var data = "loginCheck="+loginCheck+"&username="+username+"&password="+password;
+		xhr.open("POST", "conditions.php", true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4) {
+		      if (xhr.status == 200) {
+		      	var eachResponse=this.responseText.split("-period-");
+				if(eachResponse[1]=='success'){
+					window.location.href="index.php?LoginSuccess";
+				}else{
+					document.getElementById("loginStatusMessage").innerHTML=eachResponse[0];
+				}
+				document.getElementById("loginSubmit").innerHTML="LOGIN";
+		      } else {
+		          alert("There was a problem with the request.");
+		      }
+		    }
+		}
+	}
+
+	//Profile Pic Upload
+	function openProfilePicUploader(){
+		if(document.getElementById('profilePicUploader').style.display=='block'){
+			document.getElementById('profilePicUploader').style.display='none';
+		}else{
+			document.getElementById('profilePicUploader').style.display='block';
+		}; 
 	}
 
 </script>

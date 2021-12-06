@@ -3,6 +3,48 @@
 include 'db.php';
 session_start();
 
+//CheckSignup
+if(isset($_POST['signupCheck'])){
+	$username=mysqli_real_escape_string($conn,$_POST['username']);
+	$mobile=mysqli_real_escape_string($conn,$_POST['mobile']);
+	$email=mysqli_real_escape_string($conn,$_POST['email']);
+	$firstName=mysqli_real_escape_string($conn,$_POST['firstName']);
+	$lastName=mysqli_real_escape_string($conn,$_POST['lastName']);
+	$password=mysqli_real_escape_string($conn,$_POST['password']);
+	$checkUserAvail=mysqli_query($conn,"SELECT * FROM users WHERE username='$username' OR email='$email'");
+	if(mysqli_num_rows($checkUserAvail)<1){
+		mysqli_query($conn,"INSERT INTO users (username, email, phone, firstName, lastName, password) 
+		VALUES ('$username', '$email', '$mobile', '$firstName', '$lastName', '$password')");
+		echo'<span class="successMessage">User Added Successfully..</span><div class = "loaderButton"></div>
+		-period-success';
+	}else{
+		echo'<span class="errorMessage">Username/E-mail already registered</span>
+		-period-error';
+	}
+}
+
+//Check Login
+if(isset($_POST['loginCheck'])){
+	$username=mysqli_real_escape_string($conn,$_POST['username']);
+	$password=mysqli_real_escape_string($conn,$_POST['password']);
+	$checkUser=mysqli_query($conn,"SELECT * FROM users WHERE username='$username' OR email='$username'");
+	if(mysqli_num_rows($checkUser)>0){
+		while($rowUser=mysqli_fetch_assoc($checkUser)){
+			if($password==$rowUser['password']){
+				$_SESSION['id']=$rowUser['id'];
+				echo'LoginSuccess
+				-period-success';
+			}else{
+				echo'<span class="errorMessage">Incorrect username or password</span>
+				-period-error';
+			}
+		}
+	}else{
+		echo'<span id="signupPromoMessage" class="infoMessage">No Users Found.. <a class="miniButtons" href="#signupForm"'; ?> onclick='document.getElementById("signupPromoMessage").style.display="none"' <?php echo'>Sign Up</a> to Create an Account</span><br>';
+	}
+}
+
+
 //like Button
 if(isset($_POST['likeSubmit'])){
 	$postId=$_POST['postId'];
@@ -118,7 +160,7 @@ if(isset($_POST['addComment'])){
 		}
 	}
 	echo $newCommentCount.' Comments-period-
-	<div id="commentDivOf'.$newCommentId.'" title="Comment added on '.date('h:i d-m-y',strtotime($commentDateTime)).'">
+	<div id="commentDivOf'.$newCommentId.'" title="Comment added on '.date('d-M-y h:ia',strtotime($commentDateTime)).'">
 	<strong>'.$userFullName.'</strong>
 	<span id="postComment'.$newCommentId.'">'.$newComment.'</span>';
 	/*Delete or Edit Comment*/
@@ -143,10 +185,11 @@ if(isset($_POST['uploadPostOnlyCaption'])){
 	$username=$_POST['username'];
 	$caption=$_POST['caption'];
 	$type=$_POST['type'];
+	$postPrivacy=$_POST['postPrivacy'];
 	$photo='';
 	date_default_timezone_set('Asia/Kolkata');
 	$dateUploaded=date('Y-m-d H:i:s');
-	mysqli_query($conn,"INSERT INTO posts (username,caption,type,dateTimeUploaded,photo) VALUES ('$username','$caption','$type','$dateUploaded','$photo')");
+	mysqli_query($conn,"INSERT INTO posts (username,caption,type,dateTimeUploaded,photo,privacy) VALUES ('$username','$caption','$type','$dateUploaded','$photo','$postPrivacy')");
 	$checkPostUpdated=mysqli_query($conn,"SELECT * FROM posts WHERE username='$username' ORDER BY id DESC LIMIT 1");
 	if(mysqli_num_rows($checkPostUpdated)>0){
 		while($rowPostUpdated=mysqli_fetch_assoc($checkPostUpdated)){
@@ -159,7 +202,17 @@ if(isset($_POST['uploadPostOnlyCaption'])){
 			<div style="display:flex">';	
 				getProfilePictureInConditionsPage($conn,$username);
 				echo '<div class="postProfileDetails">'.getFriendsFullNameInConditionsPage($username,$conn);
-				echo'<div class="postDate">'.date('d-M H:i',strtotime($dateUploaded)).'</div></div>
+				echo'<div class="postDate" title="Posted on '.date('d-M-Y H:i a, D',strtotime($dateUploaded)).'">'.date('d-M H:i',strtotime($dateUploaded));
+					echo'<span id = "postPrivacyShow'.$postId.'">';/*For after editing update*/
+					if($postPrivacy=='public'){
+						echo '<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+					}else if($postPrivacy=='private'){
+						echo '<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+					}else if($postPrivacy=='friends'){
+						echo '<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+					}
+					echo'</span>';
+				echo'</div></div>
 			</div>
 			<div class="postMenuDiv">';
 				echo'<div id="menuIconFor'.$postId.'" class="hamburgerMenuIcon" onclick="showMenuOptions('.$postId.')">
@@ -168,8 +221,9 @@ if(isset($_POST['uploadPostOnlyCaption'])){
 					<div class="dotC"></div>
 				</div>
 				<div id="menuOptionsFor'.$postId.'" class="menuOptions" style="display:none">
-					<div id="'.$postId.'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$postId.'\',\''.$caption.'\')">edit</div>
+					<div id="'.$postId.'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$postId.'\')">edit</div>
 					<div id="'.$postId.'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$postId.'\')">delete</div>
+					<div id="'.$postId.'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$postId.'\')">privacy</div>
 				</div>';
 			echo'</div>
 		</div>';
@@ -199,6 +253,7 @@ if(isset($_POST['uploadPost'])){
 	$username=$_POST['username'];
 	$caption=$_POST['caption'];
 	$type=$_POST['type'];
+	$postPrivacy=$_POST['postPrivacy'];
 	$_SESSION['profilePicUsername']=$username;
 	$_SESSION['profilePicCaption']=$caption;
 	$_SESSION['profilePicType']=$type;
@@ -226,7 +281,7 @@ if(!empty($_FILES['postUploadFile'] ?? null)) {
 			$path="posts/".$username."/posts/".basename($_FILES['postUploadFile']['name']);
 		}
 		if(move_uploaded_file($_FILES['postUploadFile']['tmp_name'], $path)){
-			mysqli_query($conn,"INSERT INTO posts (username, photo, caption, type, dateTimeUploaded) VALUES ('$username', '$path', '$caption', '$type', '$dateUploaded')");
+			mysqli_query($conn,"INSERT INTO posts (username, photo, caption, type, dateTimeUploaded,privacy) VALUES ('$username', '$path', '$caption', '$type', '$dateUploaded','$postPrivacy')");
 			/*Get ProfilePic Location*/
 			$checkPostProfilePic=mysqli_query($conn,"SELECT * FROM posts WHERE username='$username' ORDER BY id DESC LIMIT 1");
 			if(mysqli_num_rows($checkPostProfilePic)>0){
@@ -264,7 +319,17 @@ if(!empty($_FILES['postUploadFile'] ?? null)) {
 							echo '<div class="postProfileDetails">'.ucwords($combinedName);
 							if($type=='post'){echo' has added a new post';}
 							elseif($type=='profilePicture'){echo' has changed Profile Picture';}
-							echo'<div class="postDate">'.date('d-M H:i',strtotime($dateUploaded)).'</div></div>
+							echo'<div class="postDate" title="Posted on '.date('d-M-Y H:i a, D',strtotime($dateUploaded)).'">'.date('d-M H:i',strtotime($dateUploaded));
+									echo'<span id = "postPrivacyShow'.$postId.'">';/*For after editing update*/
+									if($postPrivacy=='public'){
+										echo '<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+									}else if($postPrivacy=='private'){
+										echo '<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+									}else if($postPrivacy=='friends'){
+										echo '<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+									}
+									echo'</span>';
+								echo'</div></div>
 						</div>
 						<div class="postMenuDiv">';
 							echo'<div id="menuIconFor'.$postId.'" class="hamburgerMenuIcon" onclick="showMenuOptions('.$postId.')">
@@ -275,6 +340,7 @@ if(!empty($_FILES['postUploadFile'] ?? null)) {
 							<div id="menuOptionsFor'.$postId.'" class="menuOptions" style="display:none">
 								<div id="'.$postId.'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$postId.'\',\''.$caption.'\')">edit</div>
 								<div id="'.$postId.'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$postId.'\')">delete</div>
+								<div id="'.$postId.'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$postId.'\')">privacy</div>
 							</div>';
 						echo'</div>
 					</div>';
@@ -301,7 +367,17 @@ if(!empty($_FILES['postUploadFile'] ?? null)) {
 						<div style="display:flex">';	
 							getProfilePictureInConditionsPage($conn,$username);
 							echo '<div class="postProfileDetails">'.getFriendsFullNameInConditionsPage($username,$conn);
-							echo'<div class="postDate">'.date('d-M H:i',strtotime($dateUploaded)).'</div></div>
+							echo'<div class="postDate" title="Posted on '.date('d-M-Y H:i a, D',strtotime($dateUploaded)).'">'.date('d-M H:i',strtotime($dateUploaded));
+									echo'<span id = "postPrivacyShow'.$postId.'">';/*For after editing update*/
+									if($postPrivacy=='public'){
+										echo '<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+									}else if($postPrivacy=='private'){
+										echo '<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+									}else if($postPrivacy=='friends'){
+										echo '<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+									}
+									echo'</span>';
+								echo'</div></div>
 						</div>
 						<div class="postMenuDiv">';
 							echo'<div id="menuIconFor'.$postId.'" class="hamburgerMenuIcon" onclick="showMenuOptions('.$postId.')">
@@ -312,6 +388,7 @@ if(!empty($_FILES['postUploadFile'] ?? null)) {
 							<div id="menuOptionsFor'.$postId.'" class="menuOptions" style="display:none">
 								<div id="'.$postId.'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$postId.'\',\''.$caption.'\')">edit</div>
 								<div id="'.$postId.'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$postId.'\')">delete</div>
+								<div id="'.$postId.'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$postId.'\')">privacy</div>
 							</div>';
 						echo'</div>
 					</div>';
@@ -406,7 +483,7 @@ function commentActionButtonInConditionsPage($conn,$postId,$userId,$username,$sh
 					$postComments=mysqli_query($conn,"SELECT * FROM comments WHERE postId='$postId'");
 					while($rowComment=mysqli_fetch_assoc($postComments)){
 						echo'
-						<div title="Comment added on '.date('h:i d-m-y',strtotime($rowComment['commentDateTime'])).'">
+						<div title="Comment added on '.date('d-M-y h:ia',strtotime($rowComment['commentDateTime'])).'">
 						<strong>'.$rowComment['userFullName'].'</strong>
 						<span>'.$rowComment['comment'].'</span>
 						</div>
@@ -420,9 +497,9 @@ function commentActionButtonInConditionsPage($conn,$postId,$userId,$username,$sh
 		}
 		echo'<form method="POST">
 			<textarea id="postOf'.$userId.$postId.'" name="comment" placeholder="Add a Comment" class="commentBox"></textarea><br>
-			<div id="commentSubmitOf'.$userId.$postId.'" class="headerButtons" style="margin:0px;display:inline-flex" type="button" name="submitComment" onclick="addComment(\''.$postId.'\',\''.$userId.'\',\''.getFriendsFullNameInConditionsPage($username,$conn).'\')">
+			<button id="commentSubmitOf'.$userId.$postId.'" class="miniButtons" style="margin:0px;display:inline-flex" type="button" name="submitComment" onclick="addComment(\''.$postId.'\',\''.$userId.'\',\''.getFriendsFullNameInConditionsPage($username,$conn).'\')">
 				Submit
-			</div>
+			</button>
 		</form>
 	</div>';
 }
@@ -470,6 +547,56 @@ if(isset($_POST['confirmedDeletePost'])){
 	mysqli_query($conn,"DELETE FROM likes WHERE postId='$postId'");
 	echo'Done';
 }
+
+/*Show Post Privacy Confirmation*/
+if(isset($_POST['showPostPrivacy'])){
+	$postId=$_POST['postId'];
+	$privacyStat = 'public';
+	$checkPrivacy = mysqli_query($conn, "SELECT * FROM posts WHERE id = '$postId'");
+	if($checkPrivacy>0){
+		while($rowPrivacyStatus = mysqli_fetch_assoc($checkPrivacy)){
+			$privacyStat = $rowPrivacyStatus['privacy'];
+		}
+	}
+	echo'<div class="editPostDivOuter">
+		<div class="editPostInnerDiv" style="max-height:50%;min-height:50%">
+			<div class="headingName">Post Privacy Details</div><hr><br><br>
+			<div>
+				Current Privacy Status of this post: <span class = "successMessage">';
+				echo $privacyStat;
+				if($privacyStat == 'public'){echo '&#127758;';}
+				elseif($privacyStat == 'private'){echo '&#128274;';}
+				elseif($privacyStat == 'friends'){echo '&#128101;';}
+			echo'</span></div><br>
+			This means this post is Visible to ';
+			if($privacyStat == 'public'){echo 'Everyone!';}
+			elseif($privacyStat == 'private'){echo 'only You!';}
+			elseif($privacyStat == 'friends'){echo 'only your friends!';}
+			echo '<br><br><br>
+			Update Privacy Option: 
+			<select id = "UpdatedPrivacyStatus'.$postId.'">
+				<option value = "">Select</option>
+				<option value = "public">Public (Visible to all)</option>
+				<option value = "friends">Friends (Visible to Friends)</option>
+				<option value = "private">Private (Visible to only you)</option>
+				</select><br><br><br>
+			<button id="confirmUpdatePrivacyPost'.$postId.'" class="miniButtons cancelButton" type="button" onclick="confirmUpdatePrivacyPost(\''.$postId.'\')">Update</button>
+			<button class="miniButtons" type="button" onclick="closePrivacyDiv()">Cancel</button>
+		</div>
+	</div>';
+}
+/*Update Privacy Post*/
+if(isset($_POST['confirmUpdatePrivacyPost'])){
+	$postId=$_POST['postId'];
+	$UpdatedPrivacyStatus=$_POST['UpdatedPrivacyStatus'];
+	if($UpdatedPrivacyStatus=='public'||$UpdatedPrivacyStatus=='private'||$UpdatedPrivacyStatus=='friends'){
+		mysqli_query($conn,"UPDATE posts SET privacy='$UpdatedPrivacyStatus' WHERE id='$postId'");
+		echo 'Updated..!';
+	}else{
+		echo 'No Change';
+	}
+}
+
 
 /*Show Comment Delete Confirmation*/
 if(isset($_POST['showCommentDelete'])){
@@ -757,6 +884,54 @@ if(isset($_POST['sendFeedback'])){
 	mysqli_query($conn,"INSERT INTO userFeedback (userId, userFullName, userFeedback) VALUES ('$userId','$userFullName','$userFeedback')");
 	echo'Feedback sent..<br><br>Thanks for the feedback.. <br>We will check it out soon..<br><br>
 	<button class="coolMiniButton" type="button" onclick="toggleFeedbackForm()">Close Form</button>';
+}
+
+
+if(isset($_POST['forgotPasswordSendEmail'])){
+	$emailId=$_POST['emailId'];
+	$checkMail=mysqli_query($conn,"SELECT * FROM users WHERE email='$emailId' ORDER BY id DESC LIMIT 1");
+
+	if(mysqli_num_rows($checkMail)>0){
+		while($rowMail=mysqli_fetch_assoc($checkMail)){
+			$password= $rowMail['password'];
+			$encItem = $emailId.$password;//To encrypt the key to send to reset password which contains both email and old password
+			$encMethod="AES-128-CTR";
+			$encKey="149118912";
+			$encOptions=0;
+			$encIv="socialSytEncyrpt";
+			$encryption = openssl_encrypt($encItem, $encMethod ,$encKey , $encOptions, $encIv);
+			$to      = $emailId;
+		    $subject = 'Social Site Password Reset Link';
+		    $message = 'Hello '.$rowMail['firstName'].' '.$rowMail['lastName'].'<br><br><a href="socialsite14911.000webhostapp.com?emailId='.$emailId.'&key='.$encryption.'">Reset</a>';
+		    $message.='To reset your account, please click here<br>
+		    <a href="socialsite14911.000webhostapp.com?emailId='.$emailId.'&key='.$encryption.'">Reset</a><br><br>
+		    If you have not requested to reset the password, please ignore this mail.';
+		    $headers = "MIME-Version: 1.0" . "\r\n";
+			$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+			// More headers
+			$headers .= 'From: <webmaster@example.com>' . "\r\n";
+			$headers .= 'Cc: nshakohi4@gmail.com' . "\r\n";
+
+		    mail($to, $subject, $message,$headers);
+		    if(mail($to, $subject, $message, $headers))
+            {
+            	echo'<span class="successMessage">Password Reset link has been sent to the registered Email ID if valid.</span><br>
+				Please check your mail and follow the instructions to reset your password..<br><br>
+				<button class="coolMiniButton" type="button" onclick="forgotPassword()">Close Form</button>
+				-period-successMessage';
+            }else{
+            	echo'<span class="errorMessage">There was an error..</span><br>
+				Try Again after some time..<br><br>
+				<button class="coolMiniButton" type="button" onclick="forgotPassword()">Close Form</button>
+				-period-errorMessage';
+            }
+		}
+	}else{
+		echo '<br><br><span class="errorMessage">Email ID not found..</span><br><br>
+		Try Again
+		-period-errorMessage';
+	}
 }
 
 ?>

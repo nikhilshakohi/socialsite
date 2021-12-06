@@ -7,6 +7,7 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<meta name="google-site-verification" content="M6Wbpyq5eHZattL1_fqsV8HxSLz8T_U1UlUppkvfLtU" /> <!--Google Verification-->
 	<meta name="viewport" content="width=device-width, intial-scale=1.0">
 	<title>Social Site</title>
 </head>
@@ -15,9 +16,7 @@
 	
 	/*Disable Form Resubmission*/
 	echo'<script>
-	if(window.history.replaceState{
-		window.history.replaceState(null,null,"index.php");
-		})
+	if(window.history.replaceState){window.history.replaceState(null,null,"index.php");}
 	</script>';
 
 	//Check if already logged in using SESSION.. Show Login page if not logged in
@@ -36,9 +35,19 @@
 		//The best thing about PHP is that it can be ended or initilized anywhere
 		echo'<div id="headerDiv">
 			<div id="headerFirst">
-				<a href="index.php"><div id="headerSiteName">Social Site</div></a>
-				<a id="headerHomeDiv" href="index.php"><div class="headerButtons">Home</div></a>
-				<a id="headerMessengerDiv" href="messenger.php"><div class="headerButtons">Messenger</div></a>
+				<a title="v1.5" href="index.php"><div id="headerSiteName">Social Site</div></a>
+				<a id="headerHomeDiv" href="index.php"><div class="headerButtons headerButtonsNew">Home</div></a>
+				<a id="headerMessengerDiv" href="messenger.php"><div class="headerButtons headerButtonsNew">Messenger
+					<span id="headerNewMsgTag" class="newMsgTagHeader" style="font-size: small;font-weight:100;';
+					/*Check new messages for user in new tag at header*/
+					$checkUnreadStatusOfUser=mysqli_query($conn,"SELECT * FROM messages WHERE friendUserId='$userId' AND readStatus='0'");
+					if(mysqli_num_rows($checkUnreadStatusOfUser)>0){
+						echo' display:inline-block';
+					}else{
+						echo' display:none ';
+					}	
+					echo'" >new</span>
+				</div></a>
 			</div>
 			<div id="headerMiddle"><form method="POST" action="search.php" id="headerSearchForm">
 				<input class="headerSearchBar" type="search" name="query" placeholder="Search for friends" required>
@@ -50,7 +59,7 @@
 					<div class="headerFullName headerProfileLink">'.getFriendsFullName($username,$conn).'</div>
 					</a>
 				<form method="POST" action="logout.php">
-					<input id="headerLogoutButton" class="headerButtons" type="submit" value="Logout" name="logout">
+					<input id="headerLogoutButton" class="headerButtons headerButtonsNew" type="submit" value="Logout" name="logout">
 				</form>
 				<div id="hamburgerIcon"';?> onclick="document.getElementById('headerSideDivModal').style.display='flex'"
 						<?php echo' >
@@ -74,7 +83,21 @@
 				</form>
 				<a href="index.php"><div class="headerSideButtons">Home</div></a>
 				<a href="profile.php"><div class="headerSideButtons">My Profile</div></a>
-				<a href="messenger.php"><div class="headerSideButtons">Messenger</div></a>
+				<a href="messenger.php"><div class="headerSideButtons">Messenger
+					<span id="headerNewMsgTag" class="newMsgTagHeader" style="font-size: small;font-weight:100;';
+					/*Check new messages for user in new tag at header*/
+					$checkUnreadStatusOfUser=mysqli_query($conn,"SELECT * FROM messages WHERE friendUserId='$userId' AND readStatus='0'");
+					if(mysqli_num_rows($checkUnreadStatusOfUser)>0){
+						echo' display:inline-block';
+					}else{
+						echo' display:none ';
+					}	
+					echo'" >new</span>
+				</div></a>
+				<form method="POST" action="search.php">
+					<input type="hidden" name="query" value="">
+					<input class="headerSideButtons headerSideFindFriendsButton" type="submit" name="search" value="Find More Friends">
+				</form>
 				<a href="about.php"><div class="headerSideButtons headerSideAboutButton">About Site</div></a>
 				<a onclick="toggleFeedbackForm()"><div class="headerSideButtons headerSideFeedbackButton">User Feedback</div></a>';
 				$checkFriendRequests=mysqli_query($conn,"SELECT * FROM connections WHERE userB='$username' AND connectionStatus='1'");
@@ -87,7 +110,7 @@
 	}else{
 		echo'<div id="headerDiv">
 			<div id="headerFirst">
-				<a href="index.php"><div id="headerSiteName">Social Site</div></a>
+				<a title="v1.5" href="index.php"><div id="headerSiteName">Social Site</div></a>
 			</div>
 			<div id="headerMiddle"></div>
 			<div id="headerLast">
@@ -102,6 +125,9 @@
 
 	/*Delete Post Div*/
 	echo'<div id="deletePostDiv"></div>';
+
+	/*Post Privacy Div*/
+	echo'<div id="privacyPostDiv"></div>';
 
 	/*Delete Comment Div*/
 	echo'<div id="deleteCommentDiv"></div>';
@@ -127,6 +153,24 @@
 						<textarea id="feedbackInput" placeholder="Write any suggestion/concern/bug report/feedback" class="feedbackInput"></textarea><br><br>
 						<button class="miniButtons coolButton" type="button" onclick="sendFeedback()">Send</button>
 						<button class="miniButtons cancelButton" type="button" onclick="toggleFeedbackForm()">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>';
+	}
+
+	/*Feedback Form*/
+	if(!isset($_SESSION['id'])){
+		echo'<div id="forgotPasswordDiv">
+			<div class="editPostDivOuter">
+				<div class="editPostInnerDiv">
+					<div class="headingName">Password Recovery Form</div><hr><br><br>
+					<div id="forgotPasswordContent">
+						<div>Forgot your password? No need to worry.. <br>We understand the trouble to remember those passwords</div><br>
+						<div>Please Enter the E-mail ID you have signed up with..</div><br>
+						<input type="text" id="emailIdToBeRecovered" placeholder="Registered Email ID"><br><br>
+						<button class="miniButtons coolButton" type="button" onclick="forgotPasswordSendEmail()">Confirm</button>
+						<button class="miniButtons cancelButton" type="button" onclick="forgotPassword()">Cancel</button>
 					</div>
 				</div>
 			</div>
@@ -325,7 +369,12 @@
 	
 	function userPosts($conn,$currentUsername,$userId){
 		/*Photos or Profile Pictures*/
-		$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' ORDER BY id DESC");
+		$username = getUserNameFromId($conn, $_SESSION['id']);
+		if($username==$currentUsername){
+			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' ORDER BY id DESC");
+		}else{
+			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' AND privacy !='private' ORDER BY id DESC");
+		}
 		if(mysqli_num_rows($userPosts)>0){
 			echo'<div class="profilePosts">';
 			while($rowPost=mysqli_fetch_assoc($userPosts)){
@@ -342,7 +391,17 @@
 								'</button></form>';
 							if($rowPost['type']=='post'){echo' has added a new post';}
 							elseif($rowPost['type']=='profilePicture'){echo' has changed Profile Picture';}
-							echo'</div><div title="Posted on '.date('d-M-Y H:i a, D',strtotime($rowPost['dateTimeUploaded'])).'" class="postDate">'.date('d-M H:i',strtotime($rowPost['dateTimeUploaded'])).'</div></div>
+							echo'</div><div title="Posted on '.date('d-M-Y H:i a, D',strtotime($rowPost['dateTimeUploaded'])).'" class="postDate">'.date('d-M H:i',strtotime($rowPost['dateTimeUploaded']));
+									echo'<span id = "postPrivacyShow'.$rowPost['id'].'">';/*For after editing update*/
+									if($rowPost['privacy']=='public'){
+										echo '<span title="This Post is visible to anyone" class = "postPrivacyStyle">&nbsp;&nbsp;&#127758;</span>';
+									}else if($rowPost['privacy']=='private'){
+										echo '<span title="This Post is visible to only you" class = "postPrivacyStyle">&nbsp;&nbsp;&#128274;</span>';
+									}else if($rowPost['privacy']=='friends'){
+										echo '<span title="This Post is visible to only your friends" class = "postPrivacyStyle">&nbsp;&nbsp;&#128101;</span>';
+									}
+									echo'</span>';
+								echo'</div></div>
 						</div>
 						<div class="postMenuDiv">';
 							if(isset($_SESSION['id'])){$username=getUserNameFromId($conn,$_SESSION['id']);
@@ -355,6 +414,7 @@
 									<div id="menuOptionsFor'.$rowPost['id'].'" class="menuOptions" style="display:none">
 										<div id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\',\''.$rowPost['caption'].'\')">edit</div>
 										<div id="'.$rowPost['id'].'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$rowPost['id'].'\')">delete</div>
+										<div id="'.$rowPost['id'].'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$rowPost['id'].'\')">privacy</div>
 									</div>';
 								}else{
 									echo'<div></div>';//For Maintaining Flex Position
@@ -475,16 +535,16 @@
 				<input type="hidden" name="postId" value="'.$postId.'">
 				<input id="userFullName'.$postId.'" type="hidden" name="userFullName" value="'.getFriendsFullName($username,$conn).'">
 				<input id="userId'.$postId.'" type="hidden" name="userId" value="'.$userId.'">
-				<div type="button" class="likeButton" id="likeDiv'.$postId.'" onclick="likeSubmit('.$postId.',1)" name="likeSubmit">Like</div>
-				<div type="button" class="likedButton" id="unLikeDiv'.$postId.'" onclick="likeSubmit('.$postId.',0)" name="unlikeSubmit" style="display:none">Liked!</div>
+				<div type="button" class="likeButton" id="likeDiv'.$postId.'" onclick="likeSubmit(\''.$postId.'\',1)" name="likeSubmit">Like</div>
+				<div type="button" class="likedButton" id="unLikeDiv'.$postId.'" onclick="likeSubmit(\''.$postId.'\',0)" name="unlikeSubmit" style="display:none">Liked!</div>
 			</form>';
 		}else{
 			echo'<form method="POST" class="likedButtonForm">
 			<input type="hidden" name="postId" value="'.$postId.'">
 			<input id="userFullName'.$postId.'" type="hidden" name="userFullName" value="'.getFriendsFullName($username,$conn).'">
 			<input id="userId'.$postId.'" type="hidden" name="userId" value="'.$userId.'">
-			<div type="button" class="likeButton" id="likeDiv'.$postId.'" onclick="likeSubmit('.$postId.',1)" name="likeSubmit" style="display:none">Like</div>
-			<div type="button" class="likedButton" id="unLikeDiv'.$postId.'" onclick="likeSubmit('.$postId.',0)" name="unlikeSubmit">Liked!</div>
+			<div type="button" class="likeButton" id="likeDiv'.$postId.'" onclick="likeSubmit(\''.$postId.'\',1)" name="likeSubmit" style="display:none">Like</div>
+			<div type="button" class="likedButton" id="unLikeDiv'.$postId.'" onclick="likeSubmit(\''.$postId.'\',0)" name="unlikeSubmit">Liked!</div>
 		</form>';
 		}
 	}
@@ -510,7 +570,7 @@
 						$postComments=mysqli_query($conn,"SELECT * FROM comments WHERE postId='$postId'");
 						while($rowComment=mysqli_fetch_assoc($postComments)){
 							echo'
-							<div id="commentDivOf'.$rowComment['id'].'" class="commentDiv" title="Comment added on '.date('h:i d-m-y',strtotime($rowComment['commentDateTime'])).'">
+							<div id="commentDivOf'.$rowComment['id'].'" class="commentDiv" title="Comment added on '.date('d-M-y h:ia',strtotime($rowComment['commentDateTime'])).'">
 							<strong>'.$rowComment['userFullName'].'</strong>
 							<span id="postComment'.$rowComment['id'].'">'.$rowComment['comment'].'</span>';
 							/*Delete Comment*/
