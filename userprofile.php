@@ -71,7 +71,7 @@ if(isset($_GET['userName'])){
 						<div class="profileDetail">
 							Full Name: <span class="actualDetail">'.getFriendsFullName($currentUsername,$conn).'</span>
 						</div>';
-						if(isset($_SESSION['id'])){
+						if(isset($_SESSION['id']) && getProfileShareCheck($conn,$sessionUser,$currentUsername)=='yep'){
 							echo'<div class="profileDetail">
 								E-mail: <span class="actualDetail">'.strtolower($rowUsers['email']).'</span>
 							</div>
@@ -84,10 +84,12 @@ if(isset($_GET['userName'])){
 							</div>
 							<div class="profileDetail">
 								Phone: <span class="actualDetail">**********</span>
-							</div>
-							<div class="profileDetail">
-								<a class="headerButtons" href="index.php">Login to Connect</a>
 							</div>';
+							if(!isset($_SESSION['id'])){
+								echo'<div class="profileDetail">
+									<a class="headerButtons" href="index.php">Login to Connect</a>
+								</div>';
+							}
 						}
 
 						echo'<div id="bigScreenConnectionDetails">';

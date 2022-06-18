@@ -370,7 +370,7 @@
 	
 	function userPosts($conn,$currentUsername,$userId){
 		/*Photos or Profile Pictures*/
-		$username = getUserNameFromId($conn, $_SESSION['id']);
+		$username = getUserNameFromId($conn, $userId);
 		if($username==$currentUsername){
 			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' ORDER BY id DESC");
 		}else{
@@ -643,5 +643,32 @@ function getProfileConnectionDetails($conn,$sessionUser,$currentUsername){
 				}
 			}
 		echo'</div>';
+	}
+}
+
+//Check friend or not
+function getProfileShareCheck($conn,$sessionUser,$currentUsername){
+	if(isset($_SESSION['id'])){
+			$checkConnection=mysqli_query($conn,"SELECT * FROM connections WHERE (userA='$sessionUser' OR userB='$sessionUser') AND (userA='$currentUsername' OR userB='$currentUsername') AND (connectionStatus='1' OR connectionStatus='2') ORDER BY id DESC LIMIT 1");
+			if(mysqli_num_rows($checkConnection)>0){
+				while($rowConnectionStatus=mysqli_fetch_assoc($checkConnection)){
+					if($currentUsername==$sessionUser){
+						return 'yep';//Same user checking their profile	
+					}elseif($rowConnectionStatus['connectionStatus']=='2'){
+						return 'yep';//User friends with the profile	
+					}elseif($rowConnectionStatus['connectionStatus']=='1'){
+						return 'nope';//User not yet friends with the profile	
+					}
+				}
+			}else{
+				if($currentUsername==$sessionUser){
+					return 'yep';	
+				}else{/*As strings cannot pass through PHP to JS directly, we use \' charecter before and after string */
+					return 'nope';	
+				}
+			}
+
+	}else{
+		return 'nope';
 	}
 }
