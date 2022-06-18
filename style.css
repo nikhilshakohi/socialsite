@@ -201,7 +201,7 @@ a{text-decoration: none;color: white;}
 
 /*Content Page*/
 /*For Mobile View*/
-#content{display: flex;margin-top: 70px;margin-bottom: 20px;animation: fade 0.5s ease-in-out;}
+#content,.otherContentStyle{display: flex;margin-top: 70px;margin-bottom: 20px;animation: fade 0.5s ease-in-out;}
 #contentLeft{width: 30%;padding: 0 10px;}
 #contentCenter{width: 40%;margin: 5px 10px;}
 #contentRight{width: 30%;padding: 0 10px;}
@@ -234,7 +234,17 @@ a{text-decoration: none;color: white;}
 	background-color: rgba(200, 200, 200, 1.0);
 	font-size: medium;
 	padding: 10px;font-family: Verdana;margin: 5px;
+	height: 30px;width: 250px;
+	transition: height 1s ease-in-out, width 1s ease-in-out;
 }
+.postCaptionEntry:focus{z-index: 1;top:100px;height: 60px;width: 100%;}
+.postCaptionEntry:focus ~ .inputCaptionHelper{display: block;}
+.postCaptionEntry:focus ~ .addPictureButton{display: none;}
+.postCaptionEntry:focus ~ .postPrivacyButton{display: none;}
+.postUploadButton{display: inline-flex;animation: fade 1s ease-in-out;}
+.captionDoneButton{display: none;animation: fade 1s ease-in-out;}
+.postCaptionEntry:focus ~ .postUploadButton{display: none;}
+.postCaptionEntry:focus ~ .captionDoneButton{display: inline-flex;}
 .coolButton{background: linear-gradient(to right, rgba(50,50,100,1), rgba(50,50,250,1));margin: 0px;}
 .coolButton:hover{background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));}
 .coolMiniButton{background: linear-gradient(to right, rgba(20,20,100,0.7), rgba(50,50,250,0.7));margin: 0px;
@@ -324,6 +334,9 @@ padding: 5px 10px;font-size: small;border: none;border-radius: 20px;color: white
 }
 .likedButton{
 	padding: 10px 20px;
+}
+.commentSpace{
+	white-space: pre-wrap;
 }
 .shareButtonForm{width: 33%;display: inline-flex;justify-content: flex-end;}
 .commentButtonForm{justify-content: center;width: 33%;display: inline-flex;}

@@ -18,6 +18,7 @@ if(mysqli_num_rows($userDetails)>0){
 	}
 }
 if(isset($_POST['search'])){
+	echo'<div id="pageLoader" class="loaderButton loaderButtonBig"></div>'; //As it is called on page load
 	echo'<div id="content">
 	<div id="contentLeft"></div>
 	<div class="searchDiv">';

@@ -3,6 +3,7 @@
 include 'header.php';
 
 if(isset($_GET['postId'])){
+	echo'<div id="pageLoader" class="loaderButton loaderButtonBig"></div>'; //As it is called on page load
 	echo'<div id="content">';
 	$encryptedPostId=mysqli_real_escape_string($conn,$_GET['postId']);
 	$postId=($encryptedPostId-149118912)/149118912;

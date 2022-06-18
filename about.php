@@ -2,6 +2,7 @@
 
 include 'header.php';
 
+echo'<div id="pageLoader" class="loaderButton loaderButtonBig"></div>'; //As it is called on page load
 echo'<div id="content">
 	<div id="contentLeft"></div>
 	<div id="contentCenter">

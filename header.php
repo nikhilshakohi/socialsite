@@ -15,9 +15,10 @@
 <?php
 	
 	/*Disable Form Resubmission*/
-	echo'<script>
+	/*Removed later as this is causing the page to stay at index.php only and unable to change to other pages*/
+	/*echo'<script>
 	if(window.history.replaceState){window.history.replaceState(null,null,"index.php");}
-	</script>';
+	</script>';*/
 
 	//Check if already logged in using SESSION.. Show Login page if not logged in
 	if(isset($_SESSION['id'])){//Session is started when user logged in, as we store attributes in $_SESSION
@@ -572,7 +573,7 @@
 							echo'
 							<div id="commentDivOf'.$rowComment['id'].'" class="commentDiv" title="Comment added on '.date('d-M-y h:ia',strtotime($rowComment['commentDateTime'])).'">
 							<strong>'.$rowComment['userFullName'].'</strong>
-							<span id="postComment'.$rowComment['id'].'">'.$rowComment['comment'].'</span>';
+							<span class="commentSpace" id="postComment'.$rowComment['id'].'">'.$rowComment['comment'].'</span>';
 							/*Delete Comment*/
 							if($rowComment['userId']==$userId){
 								echo'<div id="menuIconForCommentOf'.$rowComment['id'].'" class="hamburgerMenuIcon hamburgerCommentsMenuIcon" onclick="showMenuOptionsOfComment('.$rowComment['id'].')" style="display:inline-flex">
@@ -581,7 +582,7 @@
 									<div class="dotC"></div>
 								</div>
 								<div id="menuOptionsForCommentOf'.$rowComment['id'].'" class="menuOptionsOfComments" style="display:none">
-									<div title="Edit Comment?" id="'.$rowComment['id'].'commentEditButton" class="likeUserDetails" onclick="showCommentEditDiv(\''.$rowComment['id'].'\',\''.$rowComment['comment'].'\')">edit</div>
+									<div title="Edit Comment?" id="'.$rowComment['id'].'commentEditButton" class="likeUserDetails" onclick="showCommentEditDiv(\''.$rowComment['id'].'\')">edit</div>
 									<div title="Delete the Comment?" id="'.$rowComment['id'].'commentDeleteButton" class="likeUserDetails" onclick="showCommentDeleteDiv(\''.$rowComment['id'].'\')">delete</div>
 								</div>';
 							}
