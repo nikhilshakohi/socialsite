@@ -59,7 +59,10 @@ if(mysqli_num_rows($userDetails)>0){
 						<span id="profilePicUploader" style="display:none">
 							<textarea id="postCaptionEntry'.$username.'" class="postCaptionEntry" rows="1" cols="30" placeholder="Write Something or caption" name="caption"></textarea><br>
 							<input id="postUploadFile" type="file" name="fileName" style="display:none">
-							<label class="miniButtons" style="padding:7px" for="postUploadFile">Select Picture</label>';
+							<select id="postPrivacy'.$username.'" class="miniButtons postPrivacyButton" style="padding:5px;margin:5px">
+								<option value="public">&#127758;</option><option value="private">&#128274;</option><option value="friends">&#128101;</option>
+							</select>
+							<label class="miniButtons addPictureButton" style="padding:7px" for="postUploadFile">Select Picture</label>';
 							echo'<script>
 								document.getElementById("postUploadFile").onchange=
 								function(){
@@ -70,7 +73,8 @@ if(mysqli_num_rows($userDetails)>0){
 							</script>
 							<div id="getUploadedFileName" style="width:200px;display:inline-flex"></div>
 							
-							<div id="profilePictureSubmitOf'.$username.'" class="coolMiniButton" style="padding:7px;display:inline-flex" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."profilePicture".'\')">Upload</div>
+							<div id="profilePictureSubmitOf'.$username.'" class="coolMiniButton postUploadButton" style= "padding:7px;" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."profilePicture".'\')">Upload</div>
+							<button class="coolMiniButton captionDoneButton" type="button">Done</button>
 						</span>
 					</form>
 					<div id="smallScreenProfileName">

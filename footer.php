@@ -21,17 +21,17 @@
 <script>
 
 	function copy(postId){
-	var link=document.getElementById(postId.id);	
-	if(postId.value!=''){
-		setTimeout(function(){document.getElementById("messagePopup"+postId.id).style.display="none";},3000)
-		document.getElementById("messagePopup"+postId.id).style.display="block";
-		document.getElementById("messagePopup"+postId.id).innerHTML='Link Copied to Clipboard!';/*<b>'+link.value+'</b>*/
-	}else{
-		alert("No Link Found..!");
-	}	
-	document.getElementById(postId.id).type="text";
-	link.select();document.execCommand("copy");document.getElementById(postId.id).type="hidden";
-}
+		var link=document.getElementById(postId.id);	
+		if(postId.value!=''){
+			setTimeout(function(){document.getElementById("messagePopup"+postId.id).style.display="none";},3000)
+			document.getElementById("messagePopup"+postId.id).style.display="block";
+			document.getElementById("messagePopup"+postId.id).innerHTML='Link Copied to Clipboard!';/*<b>'+link.value+'</b>*/
+		}else{
+			alert("No Link Found..!");
+		}	
+		document.getElementById(postId.id).type="text";
+		link.select();document.execCommand("copy");document.getElementById(postId.id).type="hidden";
+	}
 
 	function showContent(){
 		document.getElementById("pageLoader").style.display="none";
@@ -737,27 +737,27 @@
 			document.getElementById("signupEmail").style.border = "1px solid orange";
 			document.getElementById("signupFirstName").style.border = "1px solid orange";
 		}else if(!/^[a-zA-Z0-9 ]+$/.test(username)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Username</span>";
 			document.getElementById("signupUsername").style.border = "1px solid red";
 		}else if(!/^[a-zA-Z0-9!@#$%^&*]{4,15}$/.test(password)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Password / Minimum 4 charecters are required</span>";
 			document.getElementById("signupPassword").style.border = "1px solid red";
 		}else if(!/^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Email not valid</span>";
 			document.getElementById("signupEmail").style.border = "1px solid red";
 		}else if(!/^[a-zA-Z ]*$/.test(firstName)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in First Name</span>";
 			document.getElementById("signupFirstName").style.border = "1px solid red";
 		}else if(!/^[a-zA-Z ]*$/.test(lastName)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Last Name</span>";
 			document.getElementById("signupLastName").style.border = "1px solid red";
 		}else if(!/^[0-9 ]*$/.test(mobile)){ /*Validate expressions*/
-			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000)
+			setTimeout(function(){document.getElementById("loginStatusMessage").innerHTML = "";},5000);
 			document.getElementById("loginStatusMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Mobile (only numbers)</span>";
 			document.getElementById("signupMobile").style.border = "1px solid red";
 		}else{ /*If all above conditions are valid, User is signed up!*/
