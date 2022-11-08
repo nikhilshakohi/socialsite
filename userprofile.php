@@ -5,6 +5,7 @@ include 'header.php';
 if(isset($_GET['userName'])){
 	$sessionUser=$username;
 	$username=$_GET['userName'];
+	echo'<div id="pageLoader" class="loaderButton loaderButtonBig"></div>';
 	echo'<div id="content" style="display:block">';		
 		
 		$userDetails=mysqli_query($conn,"SELECT * FROM users WHERE username='$username'");
@@ -151,7 +152,8 @@ if(isset($_GET['userName'])){
 			echo'</div>';
 			
 			echo'<div id="userProfilePostsDiv">';
-				userPosts($conn,$currentUsername,$currentUserId);
+				$sessionUserID = getUserIdFromUsername($conn,$sessionUser);
+				userPosts($conn,$currentUsername,$sessionUserID);
 			echo'</div>';
 
 

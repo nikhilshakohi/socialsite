@@ -335,6 +335,7 @@
 	function friendRequests($conn,$currentUsername){
 		$checkConnectionRequests=mysqli_query($conn,"SELECT * FROM connections WHERE userB='$currentUsername' AND connectionStatus='1'");
 		if(mysqli_num_rows($checkConnectionRequests)>0){
+			echo'<div class="sideDiv" id="friendsRequestedDiv"></div>';//Added for compensating id="friendsRequestedDiv"
 			echo'<div class="sideDiv" ><div class="headingName">Friend Requests: ('.mysqli_num_rows($checkConnectionRequests).')</div><hr>';
 			while($rowConnectionsRequested=mysqli_fetch_assoc($checkConnectionRequests)){
 				echo '<div class="requestedFriendDiv"><div class="requestedFriendDetails">
@@ -371,10 +372,12 @@
 	function userPosts($conn,$currentUsername,$userId){
 		/*Photos or Profile Pictures*/
 		$username = getUserNameFromId($conn, $userId);
+		//	echo '<script>console.log('.$userId.')</script>';
 		if($username==$currentUsername){
 			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' ORDER BY id DESC");
 		}else{
-			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' AND privacy !='private' ORDER BY id DESC");
+			$userPosts=mysqli_query($conn,"SELECT * FROM posts WHERE username='$currentUsername' AND privacy ='public' ORDER BY id DESC");
+			echo '<script>console.log("asd")</script>';
 		}
 		if(mysqli_num_rows($userPosts)>0){
 			echo'<div class="profilePosts">';
@@ -413,7 +416,7 @@
 										<div class="dotC"></div>
 									</div>
 									<div id="menuOptionsFor'.$rowPost['id'].'" class="menuOptions" style="display:none">
-										<div id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\',\''.$rowPost['caption'].'\')">edit</div>
+										<div id="'.$rowPost['id'].'EditButton" class="likeUserDetails" onclick="showPostEditDiv(\''.$rowPost['id'].'\')">edit</div>
 										<div id="'.$rowPost['id'].'DeleteButton" class="likeUserDetails" onclick="showPostDeleteDiv(\''.$rowPost['id'].'\')">delete</div>
 										<div id="'.$rowPost['id'].'PrivacyButton" class="likeUserDetails" onclick="showPostPrivacyDiv(\''.$rowPost['id'].'\')">privacy</div>
 									</div>';

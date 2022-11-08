@@ -21,8 +21,8 @@ if(isset($_SESSION['id'])){
 			<a href="profile.php"><img id="profilePictureAtUploadButton" class="profilePic" src="'.getProfilePictureLocation($conn,$username).'"></a>
 			<textarea id="postCaptionEntry'.$username.'" class="postCaptionEntry" placeholder="Write Something or caption" name="caption"></textarea><br>
 			<input id="postUploadFile" type="file" name="fileName" style="display:none">
-			<label class="miniButtons" for="postUploadFile">Add<br>Picture</label>
-			<select id="postPrivacy'.$username.'" class="miniButtons" style="padding:5px;margin:5px">
+			<label class="miniButtons addPictureButton" for="postUploadFile">Add<br>Picture</label>
+			<select id="postPrivacy'.$username.'" class="miniButtons postPrivacyButton" style="padding:5px;margin:5px">
 				<option value="public">&#127758;</option><option value="private">&#128274;</option><option value="friends">&#128101;</option>
 			</select>
 			<script>document.getElementById("postUploadFile").onchange=function(){
@@ -32,7 +32,8 @@ if(isset($_SESSION['id'])){
 				}</script>
 			<div id="getUploadedFileName"></div>
 			<input type="hidden" name="type" value="post">
-			<button id="profilePictureSubmitOf'.$username.'" class="coolMiniButton" style="display:inline-flex;" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."post".'\')">Upload</button>
+			<button id="profilePictureSubmitOf'.$username.'" class="coolMiniButton postUploadButton" type="button" name="profilePicUpload" onclick="addPost(\''.$username.'\',\''."post".'\')">Upload</button>
+			<button class="coolMiniButton captionDoneButton" type="button">Done</button>
 
 		</form>';
 		if(isset($_POST['uploadPost'])){
@@ -106,7 +107,7 @@ if(isset($_SESSION['id'])){
 						</div>';
 						echo'<div id="postCaption'.$rowPost['id'].'" class="PostCaption">'.$rowPost['caption'].'</div>';
 						$encryptedPostId=(149118912*$rowPost['id'])+149118912;
-						echo'<form method="GET" action="posts.php"><input type="hidden" name="postId" value="'.$encryptedPostId.'"><button type="submit" class="postImageDiv"><img class="postImage" src="'.$rowPost['photo'].'"></button></form>';
+						echo'<form method="GET" action="posts.php"><input type="hidden" name="postId" value="'.$encryptedPostId.'"><button type="submit" class="postImageDiv"><img loading="lazy" class="postImage" src="'.$rowPost['photo'].'"></button></form>';
 						echo'<div class="postActionsDetails">';
 							$likesCount=getLikesCount($conn,$rowPost['id']);
 							$commentsCount=getCommentsCount($conn,$rowPost['id']);

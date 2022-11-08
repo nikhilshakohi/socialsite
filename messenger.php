@@ -141,7 +141,9 @@ if(isset($_SESSION['id'])){
 				if(xhr.readyState == 4) {
 			      if (xhr.status == 200) {
 			      	eachResponse=this.responseText.split("-period-");
-			      	document.getElementById(eachResponse[0]+"newMsgTag"+currentUserName).style.display="block";
+			      	if(document.getElementById(eachResponse[0]+"newMsgTag"+currentUserName)){
+			      		document.getElementById(eachResponse[0]+"newMsgTag"+currentUserName).style.display="block";
+			      	}
 			      } else {
 			          alert("There was a problem with the request.");
 			      }
