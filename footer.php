@@ -20,6 +20,8 @@
 </body>
 <script>
 
+	var globalMessage="";	//For storing chats temporarily for comparing with prev.
+
 	function copy(postId){
 		var link=document.getElementById(postId.id);	
 		if(postId.value!=''){
@@ -35,7 +37,21 @@
 
 	function showContent(){
 		document.getElementById("pageLoader").style.display="none";
-		document.getElementById("content").style.display="flex";
+		<?php
+		if(!isset($_SESSION['id'])){
+		?>
+			document.getElementById("formsContainer").style.display="block";
+		<?php
+		}else{
+		?>
+			var displayType;
+			var url = window.location.href;
+			var urlPage = url.split("/");
+			(urlPage[4].split("?")[0] == "index.php" || urlPage[4].split("?")[0] == "messenger.php") ? displayType = "flex" : displayType = "block";
+			document.getElementById("content").style.display=displayType;
+		<?php
+		}
+		?>
 	}
 
 	function showMenuOptions(postId){
@@ -597,7 +613,14 @@
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState == 4) {
 		      if (xhr.status == 200) {
-		      	document.getElementById("messageMiddlePart"+friendUserId).innerHTML=this.responseText;
+		      	if(document.getElementById("messageMiddlePart"+friendUserId)){
+		      		//To update chat only when new message is received
+		      		if(globalMessage != this.responseText){
+			      		document.getElementById("messageMiddlePart"+friendUserId).innerHTML=this.responseText;
+			      		globalMessage = this.responseText;
+			      		//console.count("checks");
+			      	}
+		      	}
 		      } else {
 		          alert("There was a problem with the request.");
 		      }

@@ -2,6 +2,7 @@
 	//Check if user is not logged in using !session
 	if(!isset($_SESSION['id'])){
 		echo'<h2>Social Site</h2>
+			<div id="pageLoader" class="loaderButton loaderButtonBig"></div>
 			<div id="formsContainer">
 				<form id="loginForm">
 					<h3>Login</h3><hr><br>

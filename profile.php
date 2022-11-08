@@ -10,6 +10,7 @@ $userId=$_SESSION['id'];
 $userDetails=mysqli_query($conn,"SELECT * FROM users WHERE id='$userId'");
 
 if(mysqli_num_rows($userDetails)>0){
+	echo'<div id="pageLoader" class="loaderButton loaderButtonBig"></div>';
 	echo'<div id="content" style="display:block">';	
 		while($rowUsers=mysqli_fetch_assoc($userDetails)){
 			$currentUserId=$rowUsers['id'];
